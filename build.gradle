@@ -25,6 +25,7 @@ buildscript {
     dependency_management_version = '1.0.3.RELEASE'
     spring_oauth2_version = '2.2.1.RELEASE'
     postgresql_version = '42.1.4'
+    commons_beanutils_version = '1.9.3'
     swagger_version = '2.7.0'
     jackson_version = '2.9.2'
 
@@ -73,6 +74,7 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
   // Other
+  compile "commons-beanutils:commons-beanutils:$commons_beanutils_version"
   compile "org.apache.commons:commons-text:$commons_text_version"
   compile "com.github.blocoio:faker:1.2.5"
   compile "net.kaczmarzyk:specification-arg-resolver:$spec_version"
