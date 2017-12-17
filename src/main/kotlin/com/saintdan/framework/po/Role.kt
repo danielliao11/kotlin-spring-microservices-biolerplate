@@ -1,6 +1,7 @@
 package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.saintdan.framework.listener.PersistentListener
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import javax.persistence.*
@@ -15,6 +16,7 @@ import javax.persistence.*
 @Entity
 @Table(name = "roles")
 @NamedEntityGraph(name = "Role.resources", attributeNodes = [NamedAttributeNode("resources")])
+@EntityListeners(PersistentListener::class)
 data class Role(
 
     @GenericGenerator(name = "roleSequenceGenerator",

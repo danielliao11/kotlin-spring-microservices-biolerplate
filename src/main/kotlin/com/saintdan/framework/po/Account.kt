@@ -1,6 +1,7 @@
 package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.saintdan.framework.listener.PersistentListener
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import javax.persistence.*
@@ -14,6 +15,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "accounts")
+@EntityListeners(PersistentListener::class)
 data class Account(
     @GenericGenerator(name = "accountSequenceGenerator",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",

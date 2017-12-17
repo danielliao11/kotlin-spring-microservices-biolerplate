@@ -1,5 +1,6 @@
 package com.saintdan.framework.po
 
+import com.saintdan.framework.listener.PersistentListener
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import javax.persistence.*
@@ -13,6 +14,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "clients")
+@EntityListeners(PersistentListener::class)
 data class Client(
     @GenericGenerator(name = "clientSequenceGenerator",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
