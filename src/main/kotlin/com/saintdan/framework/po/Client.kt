@@ -1,6 +1,5 @@
 package com.saintdan.framework.po
 
-import com.saintdan.framework.listener.PersistentListener
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import javax.persistence.*
@@ -96,8 +95,5 @@ data class Client(
 
     @Version
     @Column(nullable = false)
-    val version: Int = 0,
-
-    @Column(nullable = false, length = 5000)
-    val publicKey: String? = null
+    val version: Int = 0
 )
