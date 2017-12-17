@@ -1,5 +1,6 @@
 package com.saintdan.framework.po
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import javax.persistence.*
@@ -31,15 +32,19 @@ data class Account(
     val createdAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false, updatable = false)
+    @JsonIgnore
     val createdBy: Long = 0,
 
     @Column(nullable = false)
+    @JsonIgnore
     val lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
+    @JsonIgnore
     val lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
+    @JsonIgnore
     val version: Int = 0
 )

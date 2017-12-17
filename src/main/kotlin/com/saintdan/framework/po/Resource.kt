@@ -1,5 +1,6 @@
 package com.saintdan.framework.po
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import org.springframework.security.core.GrantedAuthority
@@ -38,19 +39,24 @@ data class Resource(
     private val createdAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false, updatable = false)
+    @JsonIgnore
     private val createdBy: Long = 0,
 
     @Column(nullable = false)
+    @JsonIgnore
     private val lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
+    @JsonIgnore
     private val lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
+    @JsonIgnore
     private val version: Int = 0,
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "resources", cascade = [(CascadeType.REFRESH)])
+    @JsonIgnore
     private val roles: Set<Role> = emptySet()
 ) : GrantedAuthority {
   override fun getAuthority(): String {

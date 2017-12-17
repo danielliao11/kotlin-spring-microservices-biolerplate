@@ -1,5 +1,6 @@
 package com.saintdan.framework.po
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import org.springframework.security.core.GrantedAuthority
@@ -36,18 +37,23 @@ data class User(
     val usr: String,
 
     @Column(nullable = false, length = 200)
+    @JsonIgnore
     val pwd: String,
 
     @Column(nullable = false)
+    @JsonIgnore
     val isAccountNonExpiredAlias: Boolean = true,
 
     @Column(nullable = false)
+    @JsonIgnore
     val isAccountNonLockedAlias: Boolean = true,
 
     @Column(nullable = false)
+    @JsonIgnore
     val isCredentialsNonExpiredAlias: Boolean = true,
 
     @Column(nullable = false)
+    @JsonIgnore
     val isEnabledAlias: Boolean = true,
 
     @Column(columnDefinition = "TEXT")
@@ -63,23 +69,29 @@ data class User(
     val createdAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false, updatable = false)
+    @JsonIgnore
     val createdBy: Long = 0,
 
     @Column(nullable = false)
+    @JsonIgnore
     val lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
+    @JsonIgnore
     val lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
+    @JsonIgnore
     val version: Int = 0,
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = [(CascadeType.REFRESH)])
     @JoinTable(name = "users_has_roles", joinColumns = [(JoinColumn(name = "user_id"))], inverseJoinColumns = [(JoinColumn(name = "role_id"))])
+    @JsonIgnore
     val roles: Set<Role> = emptySet(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [(CascadeType.REMOVE)])
+    @JsonIgnore
     val accounts: Set<Account> = emptySet()
 ) : UserDetails {
   override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
