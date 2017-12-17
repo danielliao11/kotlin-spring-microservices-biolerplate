@@ -23,35 +23,38 @@ data class Client(
     @Id
     @GeneratedValue(generator = "clientSequenceGenerator")
     @Column(updatable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @Column(length = 50)
-    val clientIdAlias: String,
+    val name: String = "",
+
+    @Column(length = 50)
+    val clientIdAlias: String = "",
 
     @Column(length = 100)
-    val resourceIdStr: String,
+    val resourceIdStr: String = "",
 
     @Column(length = 100)
-    val clientSecretAlias: String,
+    val clientSecretAlias: String = "",
 
     /**
      * Available values: read, write
      */
     @Column(length = 100)
-    val scopeStr: String,
+    val scopeStr: String = "",
 
     /**
      * grant types include "authorization_code", "password", "assertion", and "refresh_token". Default
      * description is "authorization_code,refresh_token".
      */
     @Column(length = 100)
-    val authorizedGrantTypeStr: String,
+    val authorizedGrantTypeStr: String = "",
 
     /**
      * The redirect URI(s) established during registration (optional, comma separated).
      */
     @Column(length = 1024)
-    val registeredRedirectUriStr: String,
+    val registeredRedirectUriStr: String? = "",
 
     /**
      * Authorities that are granted to the client (comma-separated). Distinct from the authorities
@@ -61,7 +64,7 @@ data class Client(
     </pre> *
      */
     @Column(length = 500)
-    val authoritiesStr: String,
+    val authoritiesStr: String = "",
 
     /**
      * The access token validity period in seconds (optional). If unspecified a global default will be
@@ -79,7 +82,7 @@ data class Client(
      * Additional information for this client, not needed by the vanilla OAuth protocol but might be
      * useful, for example, for storing descriptive information.
      */
-    val additionalInformationStr: String,
+    val additionalInformationStr: String? = "",
 
     @Column(nullable = false, updatable = false)
     val createdAt: Long = System.currentTimeMillis(),
