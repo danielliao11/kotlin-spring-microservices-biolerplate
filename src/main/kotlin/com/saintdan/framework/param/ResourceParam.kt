@@ -13,9 +13,9 @@ import org.springframework.http.HttpMethod
  */
 data class ResourceParam(
     @ApiModelProperty(hidden = true)
-    private val id: Long? = null,
+    val id: Long? = null,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "name cannot be null.")
-    private val name: String? = null, // role's name
-    private val description: String? = null
+    val name: String? = null, // role's name
+    val description: String? = null
 ) : BaseParam()

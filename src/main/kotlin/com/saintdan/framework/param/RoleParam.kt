@@ -11,10 +11,10 @@ import org.springframework.http.HttpMethod
  */
 data class RoleParam(
     @ApiModelProperty(hidden = true)
-    private val id: Long? = null,
+    val id: Long? = null,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "name cannot be null.")
-    private val name: String? = null, // role's name
-    private val description: String? = null,
-    private val resourceIds: String? = null // group ids string
+    val name: String? = null, // role's name
+    val description: String? = null,
+    val resourceIds: List<Long>? = null // group ids string
 ) : BaseParam()

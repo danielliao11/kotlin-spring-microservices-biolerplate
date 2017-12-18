@@ -42,7 +42,7 @@ class ResourceServerConfig {
             .authorizeRequests()
             .antMatchers(getUrl(ResourcePath.OPEN)).permitAll()
             .antMatchers(getUrl(ResourcePath.MANAGEMENT)).hasAnyAuthority("root", "management")
-            .antMatchers(getUrl(ResourcePath.APP)).hasAnyAuthority("root", "management", "app");
+            .antMatchers(getUrl(ResourcePath.APP)).hasAnyAuthority("root", "management", "app")
       }
     }))
 

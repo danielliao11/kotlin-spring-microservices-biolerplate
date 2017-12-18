@@ -7,7 +7,6 @@ import com.saintdan.framework.repo.ClientRepository
 import com.saintdan.framework.tool.Generator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 /**
  * @author <a href="http://github.com/saintdan">Liao Yifan</a>
@@ -17,24 +16,30 @@ import java.util.*
 @Service
 @Transactional(readOnly = true)
 class ClientDomain(private val clientRepository: ClientRepository) {
-  @Transactional fun create(param: ClientParam): Optional<Client> {
+  @Transactional fun create(param: ClientParam): Client {
     return param2Po(param)
-        .map { clientRepository.save(it) }
+        .let { clientRepository.save(it) }
   }
 
   fun all(): MutableList<Client> {
     return clientRepository.findAll()
   }
 
-  @Throws(Exception::class)
-  @Transactional fun update(param: ClientParam): Optional<Client> {
-    return clientRepository.findById(param.id)
-        .flatMap { param2Po(param, it) }
-        .map { clientRepository.save(it) }
+  fun findById(id: Long): Client? {
+    return clientRepository.findById(id).orElse(null)
   }
 
-  private fun param2Po(param: ClientParam): Optional<Client> {
-    return Optional.of(Client(
+  @Throws(Exception::class)
+  @Transactional fun update(param: ClientParam): Client {
+    val client = clientRepository.findById(param.id!!) ?: throw NoSuchElementException()
+    return client
+        .let { param2Po(param, it.get()) }
+        .let { clientRepository.save(it)
+    }
+  }
+
+  private fun param2Po(param: ClientParam): Client {
+    return Client(
         name = param.name ?: "",
         clientIdAlias = Generator.generatorOfLetterAndDigit().generate(16),
         clientSecretAlias = Generator.generatorOfLetterAndDigit().generate(32),
@@ -44,14 +49,14 @@ class ClientDomain(private val clientRepository: ClientRepository) {
         authoritiesStr = AuthorityConstant.AUTHORITY,
         accessTokenValiditySecondsAlias = param.accessTokenValiditySeconds ?: 0,
         refreshTokenValiditySecondsAlias = param.refreshTokenValiditySeconds ?: 0
-    ))
+    )
   }
 
-  private fun param2Po(param: ClientParam, client: Client): Optional<Client> {
-    return Optional.of(client.copy(
+  private fun param2Po(param: ClientParam, client: Client): Client {
+    return client.copy(
         name = param.name ?: client.name,
         accessTokenValiditySecondsAlias = param.accessTokenValiditySeconds ?: client.accessTokenValiditySecondsAlias,
         refreshTokenValiditySecondsAlias = param.refreshTokenValiditySeconds ?: client.refreshTokenValiditySecondsAlias
-    ))
+    )
   }
 }

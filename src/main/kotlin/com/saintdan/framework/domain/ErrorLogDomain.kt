@@ -1,7 +1,7 @@
 package com.saintdan.framework.domain
 
-import com.saintdan.framework.po.Log
-import com.saintdan.framework.repo.LogRepository
+import com.saintdan.framework.po.ErrorLog
+import com.saintdan.framework.repo.ErrorLogRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -19,12 +19,12 @@ import java.util.*
  */
 @Service
 @Transactional(readOnly = true)
-class LogDomain @Autowired constructor(private val logRepository: LogRepository) {
+class ErrorLogDomain @Autowired constructor(private val errorLogRepository: ErrorLogRepository) {
 
   @Async
   @Transactional
-  fun create(log: Log) {
-    logRepository.save(log)
+  fun create(errorLog: ErrorLog) {
+    errorLogRepository.save(errorLog)
   }
 
   /**
@@ -33,8 +33,8 @@ class LogDomain @Autowired constructor(private val logRepository: LogRepository)
    * @return [Page]
    * exists.
    */
-  fun page(specification: Specification<Log>, pageable: Pageable): Page<*> {
-    val logs = logRepository.findAll(specification, pageable)
+  fun page(specification: Specification<ErrorLog>, pageable: Pageable): Page<*> {
+    val logs = errorLogRepository.findAll(specification, pageable)
     return if (!logs.hasContent()) {
       PageImpl(ArrayList<Any>(), pageable, logs.totalElements)
     } else logs

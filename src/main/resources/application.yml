@@ -1,0 +1,92 @@
+# ===============================
+# = CUSTOM
+# ===============================
+# You can generate your own RSA key pair with ssh-keygen,
+# or get it in GenerateRSAKeyPair.
+client.authorities: USER
+request:
+  range: 10000
+  count: 3
+
+# ===============================
+# = HTTP/HTTPS
+# ===============================
+# You can comment above profile and uncomment line below to operate using https.
+# You can generate your own keystore with keytool.
+# And copy it to resources package.
+# Finally modify the application-https.properties.
+server.port: 8080
+# Configure the server to run with SSL/TLS and using HTTPS
+#  port: 8443
+#  ssl:
+#    key-store: classpath:your_own_cert.jks.sample
+#    key-store-password: <your-ssl-keystore-password>
+#    key-password: <your-ssl-key-password>
+
+# ===============================
+# = LOGS
+# ===============================
+logging.file: data/logs/core.log
+
+# ===============================
+# = SPRING CONFIG
+# ===============================
+spring:
+  profiles:
+    active: dev
+# Configure the server to run with SSL/TLS and using HTTPS
+#    active: https
+# ===============================
+# = DATA SOURCE
+# ===============================
+# If you want to use mysql, you could uncomment line below.
+# And use the mysql dependency in the 'build.gradle'.
+# Set here configurations for the database connection
+  datasource:
+    url: jdbc:postgresql://localhost/core?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull
+    username: core
+    password: core
+    tomcat:
+      initial-size: 10
+      max-idle: 60
+      min-idle: 10
+      max-active: 80
+      test-while-idle: true
+      validation-query: SELECT 1
+      test-on-borrow: false
+      time-between-eviction-runs-millis: 30000
+      min-evictable-idle-time-millis: 1800000
+      num-tests-per-eviction-run: 10
+      remove-abandoned: true
+      remove-abandoned-timeout: 180
+# Keep the connection alive if idle for a long time (needed in production)
+
+# ===============================
+# = JPA / HIBERNATE
+# ===============================
+
+# Use 'spring.jpa.properties.*' for Hibernate native properties (the prefix is
+# stripped before adding them to the entity manager).
+
+# Show or not log for each sql query
+  jpa:
+    show-sql: true
+# Hibernate ddl auto (create, create-drop, update): with "update" the database
+# schema will be automatically updated accordingly to java entities found in
+# the project
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+    properties:
+      hibernate:
+        format_sql: false
+        generate_statistics: true
+# Mysql
+#      dialect: org.hibernate.dialect.MySQL5Dialect
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# ===============================
+# = SPRING BOOT ADMIN
+# ===============================
+management.security.enabled: true

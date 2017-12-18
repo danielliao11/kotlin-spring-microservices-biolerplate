@@ -11,7 +11,7 @@ import org.springframework.http.HttpMethod
  */
 data class ClientParam(
     @ApiModelProperty(hidden = true)
-    val id: Long = 0,
+    val id: Long? = 0,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "name cannot be null.")
     val name: String? = null,

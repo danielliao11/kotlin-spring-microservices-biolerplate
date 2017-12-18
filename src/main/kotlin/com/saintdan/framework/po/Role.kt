@@ -28,10 +28,10 @@ data class Role(
     @Id
     @GeneratedValue(generator = "roleSequenceGenerator")
     @Column(updatable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @Column(unique = true, nullable = false, length = 20)
-    val name: String,
+    val name: String = "",
 
     @Column(length = 500)
     val description: String,
@@ -56,12 +56,20 @@ data class Role(
     @JsonIgnore
     val version: Int = 0,
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles", cascade = [(CascadeType.REFRESH)])
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles", cascade = [CascadeType.REFRESH])
     @JsonIgnore
-    val users: Set<User> = emptySet()
+    val users: Set<User>? = emptySet(),
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REFRESH])
+    @JoinTable(
+        name = "roles_has_resources",
+        joinColumns = [JoinColumn(name = "role_id")],
+        inverseJoinColumns = [JoinColumn(name = "resource_id")])
+    @JsonIgnore
+    val resources: Set<Resource>? = emptySet()
 ) {
   @PreRemove
   private fun removeRolesFromUsers() {
-    users.forEach { user -> user.roles.minus(this) }
+    users!!.forEach { user -> user.roles.minus(this) }
   }
 }

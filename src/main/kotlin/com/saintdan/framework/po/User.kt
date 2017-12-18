@@ -24,9 +24,9 @@ data class User(
     @GenericGenerator(name = "userSequenceGenerator",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = [
-          (Parameter(name = "sequence_name", value = "users_seq")),
-          (Parameter(name = "initial_value", value = "1")),
-          (Parameter(name = "increment_size", value = "1"))])
+          Parameter(name = "sequence_name", value = "users_seq"),
+          Parameter(name = "initial_value", value = "1"),
+          Parameter(name = "increment_size", value = "1")])
     @Id
     @GeneratedValue(generator = "userSequenceGenerator")
     @Column(updatable = false)
@@ -87,12 +87,15 @@ data class User(
     @JsonIgnore
     val version: Int = 0,
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [(CascadeType.REFRESH)])
-    @JoinTable(name = "users_has_roles", joinColumns = [(JoinColumn(name = "user_id"))], inverseJoinColumns = [(JoinColumn(name = "role_id"))])
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REFRESH])
+    @JoinTable(
+        name = "users_has_roles",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")])
     @JsonIgnore
     val roles: Set<Role> = emptySet(),
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [(CascadeType.REMOVE)])
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.REMOVE])
     @JsonIgnore
     val accounts: Set<Account> = emptySet()
 ) : UserDetails {

@@ -29,6 +29,6 @@ data class UserParam(
 
     private val description: String? = null,
 
-    @ApiModelProperty(value = "ids of roles", example = "1,2,3", notes = "separated by comma and no space.")
-    private val roleIds: String? = null // role ids string
+    @ApiModelProperty(value = "ids of roles", example = "[1,2,3]")
+    private val roleIds: List<Long>? = emptyList() // role ids string
 ) : BaseParam()

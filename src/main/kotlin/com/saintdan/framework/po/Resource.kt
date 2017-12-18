@@ -23,43 +23,43 @@ data class Resource(
     @GenericGenerator(name = "resourceSequenceGenerator",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
         parameters = [
-          (Parameter(name = "sequence_name", value = "resources_seq")),
-          (Parameter(name = "initial_value", value = "1")),
-          (Parameter(name = "increment_size", value = "1"))])
+          Parameter(name = "sequence_name", value = "resources_seq"),
+          Parameter(name = "initial_value", value = "1"),
+          Parameter(name = "increment_size", value = "1")])
     @Id
     @GeneratedValue(generator = "resourceSequenceGenerator")
     @Column(updatable = false)
-    private val id: Long,
+    val id: Long = 0,
 
     @Column(unique = true, nullable = false, length = 20)
-    private val name: String,
+    val name: String = "",
 
     @Column(length = 500)
-    private val description: String,
+    val description: String = "",
 
     @Column(nullable = false, updatable = false)
-    private val createdAt: Long = System.currentTimeMillis(),
+    val createdAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false, updatable = false)
     @JsonIgnore
-    private val createdBy: Long = 0,
+    val createdBy: Long = 0,
 
     @Column(nullable = false)
     @JsonIgnore
-    private val lastModifiedAt: Long = System.currentTimeMillis(),
+    val lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
     @JsonIgnore
-    private val lastModifiedBy: Long = 0,
+    val lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
     @JsonIgnore
-    private val version: Int = 0,
+    val version: Int = 0,
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "resources", cascade = [(CascadeType.REFRESH)])
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "resources", cascade = [CascadeType.REFRESH])
     @JsonIgnore
-    private val roles: Set<Role> = emptySet()
+    val roles: Set<Role> = emptySet()
 ) : GrantedAuthority {
   override fun getAuthority(): String {
     return name
