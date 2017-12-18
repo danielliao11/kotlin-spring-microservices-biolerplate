@@ -30,17 +30,16 @@ data class User(
     @Id
     @GeneratedValue(generator = "userSequenceGenerator")
     @Column(updatable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @Column(length = 50)
-    val nickname: String,
+    val nickname: String = "",
 
     @Column(nullable = false, length = 20)
-    val usr: String,
+    val usr: String = "",
 
     @Column(nullable = false, length = 200)
-    @JsonIgnore
-    val pwd: String,
+    val pwd: String = "",
 
     @Column(nullable = false)
     @JsonIgnore
@@ -87,7 +86,7 @@ data class User(
     @JsonIgnore
     val version: Int = 0,
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REFRESH])
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REFRESH])
     @JoinTable(
         name = "users_has_roles",
         joinColumns = [JoinColumn(name = "user_id")],
@@ -100,7 +99,7 @@ data class User(
     val accounts: Set<Account> = emptySet()
 ) : UserDetails {
   override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    return mutableListOf()
   }
 
   override fun getUsername(): String {

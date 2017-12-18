@@ -72,6 +72,6 @@ class RoleDomain(private val roleRepository: RoleRepository,
   @Throws(ElementAlreadyExistsException::class)
   private fun nameExists(name: String) {
     roleRepository.findByName(name)
-        .ifPresent { throw ElementAlreadyExistsException("name already exists") }
+        .ifPresent { throw ElementAlreadyExistsException("nickname already exists") }
   }
 }

@@ -15,7 +15,7 @@ data class ResourceParam(
     @ApiModelProperty(hidden = true)
     val id: Long? = null,
 
-    @NotNullField(method = [(HttpMethod.POST)], message = "name cannot be null.")
-    val name: String? = null, // role's name
+    @NotNullField(method = [(HttpMethod.POST)], message = "nickname cannot be null.")
+    val name: String? = null, // role's nickname
     val description: String? = null
 ) : BaseParam()

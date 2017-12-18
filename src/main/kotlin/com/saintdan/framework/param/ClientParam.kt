@@ -13,7 +13,7 @@ data class ClientParam(
     @ApiModelProperty(hidden = true)
     val id: Long? = 0,
 
-    @NotNullField(method = [(HttpMethod.POST)], message = "name cannot be null.")
+    @NotNullField(method = [(HttpMethod.POST)], message = "nickname cannot be null.")
     val name: String? = null,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "scope cannot be null.")

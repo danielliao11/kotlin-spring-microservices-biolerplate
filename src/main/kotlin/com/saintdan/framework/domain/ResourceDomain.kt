@@ -66,6 +66,6 @@ class ResourceDomain(private val resourceRepository: ResourceRepository) {
   @Throws(ElementAlreadyExistsException::class)
   private fun nameExists(name: String) {
     resourceRepository.findByName(name)
-        .ifPresent { throw ElementAlreadyExistsException("name already exists") }
+        .ifPresent { throw ElementAlreadyExistsException("nickname already exists") }
   }
 }

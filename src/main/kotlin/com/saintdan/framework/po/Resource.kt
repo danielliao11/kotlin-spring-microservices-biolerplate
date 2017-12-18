@@ -16,7 +16,6 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "resources")
-@NamedEntityGraph(name = "Resource.roles", attributeNodes = [NamedAttributeNode("roles")])
 @EntityListeners(PersistentListener::class)
 data class Resource(
 

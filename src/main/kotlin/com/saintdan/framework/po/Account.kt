@@ -52,5 +52,6 @@ data class Account(
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     val user: User? = null
 )

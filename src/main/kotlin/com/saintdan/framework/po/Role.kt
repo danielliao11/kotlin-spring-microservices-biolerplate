@@ -60,7 +60,7 @@ data class Role(
     @JsonIgnore
     val users: Set<User>? = emptySet(),
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REFRESH])
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REFRESH])
     @JoinTable(
         name = "roles_has_resources",
         joinColumns = [JoinColumn(name = "role_id")],
