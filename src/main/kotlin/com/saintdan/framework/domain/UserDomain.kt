@@ -16,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Service
 @Transactional(readOnly = true)
-class UserDomain(private val userRepository: UserRepository,
-                 private val roleRepository: RoleRepository) {
+class UserDomain(
+    private val userRepository: UserRepository,
+    private val roleRepository: RoleRepository) {
+
   @Transactional
   @Throws(ElementAlreadyExistsException::class)
   fun create(param: UserParam): User {

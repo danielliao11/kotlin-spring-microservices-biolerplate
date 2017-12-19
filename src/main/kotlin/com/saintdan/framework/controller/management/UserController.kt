@@ -9,14 +9,14 @@ import com.saintdan.framework.exception.NoSuchElementByIdException
 import com.saintdan.framework.param.UserParam
 import com.saintdan.framework.po.User
 import com.saintdan.framework.vo.ErrorVO
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import java.security.Principal
 
 /**
  * @author <a href="http://github.com/saintdan">Liao Yifan</a>
@@ -24,20 +24,16 @@ import java.security.Principal
  * @since JDK1.8
  */
 @RestController
-@RequestMapping(ResourcePath.API + ResourcePath.MANAGEMENT + ResourcePath.USERS)
+@RequestMapping(ResourcePath.API + ResourcePath.V1 + ResourcePath.MANAGEMENT + ResourcePath.USERS)
 class UserController(
     private val userDomain: UserDomain,
     private val logHelper: LogHelper) {
 
-  @PostMapping("test")
-  fun test(principal: Principal) {
-    if (principal is Authentication) {
-      val clientId = principal.name
-    }
-  }
-
   @PostMapping
   @ApiOperation(value = "Create user", response = User::class)
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
   fun create(@RequestBody param: UserParam): ResponseEntity<Any> {
     return try {
       userDomain.create(param)
@@ -53,6 +49,9 @@ class UserController(
   }
 
   @GetMapping
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
   fun all(): ResponseEntity<MutableList<User>> {
     return userDomain.all()
         .let { ResponseEntity.ok(it) }
@@ -64,7 +63,7 @@ class UserController(
     return userDomain.findById(id)
         .let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
   }
-  
+
   @PutMapping("{id}")
   @ApiOperation(value = "Update user", response = User::class)
   fun update(@RequestBody param: UserParam, @PathVariable id: Long): ResponseEntity<Any> {

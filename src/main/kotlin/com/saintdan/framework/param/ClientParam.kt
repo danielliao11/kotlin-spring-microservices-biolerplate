@@ -1,6 +1,7 @@
 package com.saintdan.framework.param
 
 import com.saintdan.framework.annotation.NotNullField
+import com.saintdan.framework.annotation.SizeField
 import io.swagger.annotations.ApiModelProperty
 import org.springframework.http.HttpMethod
 

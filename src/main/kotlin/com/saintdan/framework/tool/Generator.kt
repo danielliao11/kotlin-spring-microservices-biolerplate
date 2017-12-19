@@ -8,12 +8,10 @@ import org.apache.commons.text.RandomStringGenerator
  * @date 17/12/2017
  * @since JDK1.8
  */
-class Generator {
-  companion object {
-    fun generatorOfLetterAndDigit(): RandomStringGenerator {
-      return RandomStringGenerator.Builder()
-          .filteredBy(CharacterPredicates.LETTERS, CharacterPredicates.DIGITS)
-          .build()
-    }
+object Generator {
+  fun generatorOfLetterAndDigit(): RandomStringGenerator {
+    return RandomStringGenerator.Builder()
+        .filteredBy(CharacterPredicates.LETTERS, CharacterPredicates.DIGITS)
+        .build()
   }
 }

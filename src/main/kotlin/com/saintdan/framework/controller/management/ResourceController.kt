@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*
  * @since JDK1.8
  */
 @RestController
-@RequestMapping(ResourcePath.API + ResourcePath.MANAGEMENT + ResourcePath.RESOURCES)
+@RequestMapping(ResourcePath.API + ResourcePath.V1 + ResourcePath.MANAGEMENT + ResourcePath.RESOURCES)
 class ResourceController(
     private val resourceDomain: ResourceDomain,
     private val logHelper: LogHelper) {

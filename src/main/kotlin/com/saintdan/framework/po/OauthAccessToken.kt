@@ -14,7 +14,7 @@ import javax.persistence.Table
 @Entity
 @Table(name = "oauth_access_token")
 data class OauthAccessToken(
-    @Id private val tokenId: String,
+    @Id val tokenId: String,
     val userName: String,
     val clientId: String
 )

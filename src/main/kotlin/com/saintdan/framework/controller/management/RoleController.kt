@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*
  * @since JDK1.8
  */
 @RestController
-@RequestMapping(ResourcePath.API + ResourcePath.MANAGEMENT + ResourcePath.ROLES)
+@RequestMapping(ResourcePath.API + ResourcePath.V1 + ResourcePath.MANAGEMENT + ResourcePath.ROLES)
 class RoleController(
     private val roleDomain: RoleDomain,
     private val logHelper: LogHelper) {

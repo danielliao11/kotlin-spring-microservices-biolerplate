@@ -1,8 +1,13 @@
 package com.saintdan.framework.po
 
+import com.saintdan.framework.constant.CommonsConstant
 import com.saintdan.framework.listener.PersistentListener
+import org.apache.commons.lang3.StringUtils
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.oauth2.provider.ClientDetails
 import javax.persistence.*
 
 /**
@@ -101,4 +106,65 @@ data class Client(
     @Version
     @Column(nullable = false)
     val version: Int = 0
-)
+) : ClientDetails {
+  override fun getClientId(): String {
+    return clientIdAlias
+  }
+
+  override fun getResourceIds(): Set<String> {
+    return str2Set(resourceIdStr)
+  }
+
+  override fun isSecretRequired(): Boolean {
+    return true
+  }
+
+  override fun getClientSecret(): String {
+    return clientSecretAlias
+  }
+
+  override fun isScoped(): Boolean {
+    return true
+  }
+
+  override fun getScope(): Set<String> {
+    return str2Set(scopeStr)
+  }
+
+  override fun getAuthorizedGrantTypes(): Set<String> {
+    return str2Set(authorizedGrantTypeStr)
+  }
+
+  override fun getRegisteredRedirectUri(): Set<String> {
+    return if (StringUtils.isBlank(registeredRedirectUriStr)) {
+      emptySet()
+    } else {
+      str2Set(registeredRedirectUriStr!!)
+    }
+  }
+
+  override fun getAuthorities(): Collection<GrantedAuthority> {
+    return authorizedGrantTypeStr.split(CommonsConstant.COMMA)
+        .map { SimpleGrantedAuthority(it) }
+  }
+
+  override fun getAccessTokenValiditySeconds(): Int? {
+    return accessTokenValiditySecondsAlias
+  }
+
+  override fun getRefreshTokenValiditySeconds(): Int? {
+    return refreshTokenValiditySecondsAlias
+  }
+
+  override fun isAutoApprove(scope: String): Boolean {
+    return false
+  }
+
+  override fun getAdditionalInformation(): Map<String, Any>? {
+    return null
+  }
+
+  private fun str2Set(str: String): Set<String> {
+    return if (StringUtils.isBlank(str)) emptySet() else str.split(CommonsConstant.COMMA).toHashSet()
+  }
+}

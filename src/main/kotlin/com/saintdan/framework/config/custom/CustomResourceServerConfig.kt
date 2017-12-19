@@ -1,4 +1,4 @@
-package com.saintdan.framework.config
+package com.saintdan.framework.config.custom
 
 import com.saintdan.framework.constant.ResourcePath
 import org.springframework.context.annotation.Bean
@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
  */
 @Configuration
 @EnableResourceServer
-class ResourceServerConfig {
+class CustomResourceServerConfig {
 
   /**
    * Resource of api
@@ -26,7 +26,7 @@ class ResourceServerConfig {
    */
   @Bean protected fun managementResources(): ResourceServerConfiguration {
 
-    val resource = object : ResourceServerConfiguration() {}
+    val resource = ResourceServerConfiguration()
 
     resource.setConfigurers(listOf<ResourceServerConfigurer>(object : ResourceServerConfigurerAdapter() {
 

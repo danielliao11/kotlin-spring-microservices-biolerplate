@@ -1,6 +1,8 @@
 package com.saintdan.framework.service
 
 import com.saintdan.framework.param.LoginParam
+import org.springframework.http.ResponseEntity
+import org.springframework.security.oauth2.common.OAuth2AccessToken
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -10,7 +12,7 @@ import javax.servlet.http.HttpServletRequest
  */
 interface LoginService {
 
-  fun login(param: LoginParam, request: HttpServletRequest)
+  fun login(param: LoginParam, request: HttpServletRequest): ResponseEntity<OAuth2AccessToken>
 
-  fun refresh(param: LoginParam, request: HttpServletRequest)
+  fun refresh(param: LoginParam, request: HttpServletRequest): ResponseEntity<OAuth2AccessToken>
 }

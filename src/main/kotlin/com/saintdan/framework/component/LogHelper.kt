@@ -9,11 +9,11 @@ import com.saintdan.framework.tool.LogUtils
 import com.saintdan.framework.tool.RemoteAddressUtils
 import com.saintdan.framework.tool.SpringSecurityUtils
 import com.saintdan.framework.vo.ErrorVO
-import org.springframework.http.HttpMethod
-import org.springframework.stereotype.Component
 import org.slf4j.Logger
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Component
 import javax.servlet.http.HttpServletRequest
 
 /**
@@ -77,10 +77,10 @@ class LogHelper(private val logDomain: LogDomain,
 
   fun log(status: HttpStatus, logger: Logger, e: Throwable, method: HttpMethod, path: String): ResponseEntity<Any> {
     LogUtils.traceError(logger, e)
-    log(e.localizedMessage, method, path)
+    log(e.javaClass.name, method, path)
     return ResponseEntity.status(status).body(ErrorVO(
         error = ErrorType.UNKNOWN.name,
-        error_description = e.localizedMessage
+        error_description = e.localizedMessage ?: ""
     ))
   }
 }
