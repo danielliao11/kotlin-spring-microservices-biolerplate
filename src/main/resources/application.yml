@@ -15,7 +15,7 @@ request:
 # You can generate your own keystore with keytool.
 # And copy it to resources package.
 # Finally modify the application-https.properties.
-server.port: 8080
+server.port: 10080
 # Configure the server to run with SSL/TLS and using HTTPS
 #  port: 8443
 #  ssl:

@@ -39,7 +39,7 @@ data class Log(
     @Column(updatable = false)
     val path: String = "",
 
-    @Column(updatable = false)
+    @Column(updatable = false, length = 10)
     val method: String = HttpMethod.GET.name,
 
     @CreatedDate

@@ -5,11 +5,14 @@ import com.saintdan.framework.tool.LogUtils
 import com.saintdan.framework.tool.RemoteAddressUtils
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import org.springframework.core.annotation.Order
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Component
 import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 import javax.servlet.*
+import javax.servlet.annotation.WebFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -24,6 +27,9 @@ import javax.servlet.http.HttpServletResponse
  * @date 17/12/2017
  * @since JDK1.8
  */
+@Component
+@Order(1)
+@WebFilter(filterName = "LimitFilter")
 class LimitFilter(private val env: Environment) : Filter {
 
   private val map = ConcurrentHashMap<String, RequestCount>()
@@ -99,7 +105,5 @@ class LimitFilter(private val env: Environment) : Filter {
       val firstReqAt: Long = System.currentTimeMillis()
   )
 
-  companion object {
-    private val logger = LoggerFactory.getLogger(LimitFilter::class.java)
-  }
+  private val logger = LoggerFactory.getLogger(LimitFilter::class.java)
 }

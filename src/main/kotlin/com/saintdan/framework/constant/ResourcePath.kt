@@ -16,7 +16,6 @@ object ResourcePath {
   const val OPEN: String = "/open"
   const val LOGIN = "/login"
   const val REFRESH = "/refresh"
-  const val HEARTBEAT = "/heartbeat"
   const val RESOURCES = "/resources"
   const val USERS = "/users"
   const val ROLES = "/roles"

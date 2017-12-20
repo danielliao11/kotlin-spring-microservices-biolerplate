@@ -30,7 +30,7 @@ class CustomAuthenticationProvider(
     private val customPasswordEncoder: CustomPasswordEncoder,
     private val logHelper: LogHelper) : AuthenticationProvider {
 
-  override fun authenticate(authentication: Authentication?): Authentication {
+  override fun authenticate(authentication: Authentication): Authentication {
     val token = authentication as UsernamePasswordAuthenticationToken
     val clientId = LoginUtils.getClientId(request)
     val username = token.name

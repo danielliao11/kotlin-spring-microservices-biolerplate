@@ -21,7 +21,7 @@ class SwaggerConfiguration {
 
   @Bean fun api(): Docket = Docket(DocumentationType.SWAGGER_2)
       .select()
-      .apis(RequestHandlerSelectors.any())
+      .apis(RequestHandlerSelectors.basePackage("com.saintdan.framework.controller"))
       .paths(PathSelectors.any())
       .build()
 }

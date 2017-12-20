@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore
 import javax.sql.DataSource
 
@@ -20,27 +19,24 @@ import javax.sql.DataSource
 @EnableAuthorizationServer
 class CustomAuthorizationServerConfiguration(
     private val dataSource: DataSource,
+    private val authenticationManager: AuthenticationManager,
     private val clientDetailsService: CustomClientDetailsService,
     private val userDetailsService: CustomUserDetailsService) : AuthorizationServerConfigurerAdapter() {
 
-  override fun configure(endpoints: AuthorizationServerEndpointsConfigurer?) {
-    endpoints!!
+  override fun configure(endpoints: AuthorizationServerEndpointsConfigurer) {
+    endpoints
         .tokenStore(tokenStore())
         .authenticationManager(authenticationManager)
         .userDetailsService(userDetailsService)
   }
 
   @Throws(Exception::class)
-  override fun configure(clients: ClientDetailsServiceConfigurer?) {
+  override fun configure(clients: ClientDetailsServiceConfigurer) {
     // Use JDBC client.
-    clients!!.withClientDetails(clientDetailsService)
+    clients.withClientDetails(clientDetailsService)
   }
 
   // Token store type.
   @Bean
-  fun tokenStore(): JdbcTokenStore {
-    return JdbcTokenStore(dataSource)
-  }
-
-  private val authenticationManager: AuthenticationManager = OAuth2AuthenticationManager()
+  fun tokenStore(): JdbcTokenStore = JdbcTokenStore(dataSource)
 }

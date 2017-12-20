@@ -6,9 +6,11 @@ import com.saintdan.framework.annotation.SizeField
 import com.saintdan.framework.enums.ErrorType
 import com.saintdan.framework.enums.ResourceUri
 import com.saintdan.framework.servlet.RequestWrapper
+import com.saintdan.framework.tool.LogUtils
 import com.saintdan.framework.vo.ErrorVO
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -32,11 +34,13 @@ import javax.servlet.http.HttpServletResponse
  * @since JDK1.8
  */
 @Component
-@Order(1)
+@Order(2)
 @WebFilter(filterName = "ValidateFilter")
 class ValidateFilter : Filter {
 
-  override fun init(filterConfig: FilterConfig) {}
+  override fun init(filterConfig: FilterConfig) {
+    LogUtils.trackInfo(logger, "Initiating ValidateFilter")
+  }
 
   @Throws(IOException::class, ServletException::class)
   override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
@@ -76,7 +80,9 @@ class ValidateFilter : Filter {
     }
   }
 
-  override fun destroy() {}
+  override fun destroy() {
+    LogUtils.trackInfo(logger, "Destroying ValidateFilter")
+  }
 
   private fun validate(param: Any, method: HttpMethod): String {
     val fields = param.javaClass.declaredFields
@@ -108,4 +114,6 @@ class ValidateFilter : Filter {
     }
     return ""
   }
+
+  private val logger = LoggerFactory.getLogger(ValidateFilter::class.java)
 }

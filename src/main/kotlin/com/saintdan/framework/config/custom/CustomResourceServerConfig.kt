@@ -31,8 +31,8 @@ class CustomResourceServerConfig {
     resource.setConfigurers(listOf<ResourceServerConfigurer>(object : ResourceServerConfigurerAdapter() {
 
       @Throws(Exception::class)
-      override fun configure(resources: ResourceServerSecurityConfigurer?) {
-        resources!!.resourceId("api")
+      override fun configure(resources: ResourceServerSecurityConfigurer) {
+        resources.resourceId("api")
       }
 
       @Throws(Exception::class)
