@@ -2,9 +2,12 @@ package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.saintdan.framework.listener.PersistentListener
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
@@ -98,8 +101,16 @@ data class User(
     @JsonIgnore
     val accounts: Set<Account> = emptySet()
 ) : UserDetails {
+  companion object {
+    private const val serialVersionUID = 6298843159549723556L
+  }
+
   override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-    return mutableListOf()
+    val authorities = mutableListOf<GrantedAuthority>()
+    roles
+        .forEach { it.resources!!
+            .forEach { authorities.add(SimpleGrantedAuthority(it.authority)) } }
+    return authorities
   }
 
   override fun getUsername(): String {
@@ -124,5 +135,55 @@ data class User(
 
   override fun isAccountNonLocked(): Boolean {
     return isAccountNonLockedAlias
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+
+    if (other == null || javaClass != other.javaClass) return false
+
+    val user = other as User?
+
+    return EqualsBuilder()
+        .appendSuper(super.equals(other))
+        .append(id, user!!.id)
+        .append(isAccountNonExpiredAlias, user.isAccountNonExpiredAlias)
+        .append(isAccountNonLockedAlias, user.isAccountNonLockedAlias)
+        .append(isCredentialsNonExpiredAlias, user.isCredentialsNonExpiredAlias)
+        .append(isEnabledAlias, user.isEnabledAlias)
+        .append(lastLoginAt, user.lastLoginAt)
+        .append(createdAt, user.createdAt)
+        .append(createdBy, user.createdBy)
+        .append(lastModifiedAt, user.lastModifiedAt)
+        .append(lastModifiedBy, user.lastModifiedBy)
+        .append(version, user.version)
+        .append(nickname, user.nickname)
+        .append(usr, user.usr)
+        .append(pwd, user.pwd)
+        .append(description, user.description)
+        .append(ip, user.ip)
+        .isEquals
+  }
+
+  override fun hashCode(): Int {
+    return HashCodeBuilder(17, 37)
+        .appendSuper(super.hashCode())
+        .append(id)
+        .append(nickname)
+        .append(usr)
+        .append(pwd)
+        .append(isAccountNonExpiredAlias)
+        .append(isAccountNonLockedAlias)
+        .append(isCredentialsNonExpiredAlias)
+        .append(isEnabledAlias)
+        .append(description)
+        .append(lastLoginAt)
+        .append(ip)
+        .append(createdAt)
+        .append(createdBy)
+        .append(lastModifiedAt)
+        .append(lastModifiedBy)
+        .append(version)
+        .toHashCode()
   }
 }

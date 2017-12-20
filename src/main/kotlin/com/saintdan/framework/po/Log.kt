@@ -1,9 +1,12 @@
 package com.saintdan.framework.po
 
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.http.HttpMethod
+import java.io.Serializable
 import javax.persistence.*
 
 /**
@@ -45,4 +48,40 @@ data class Log(
     @CreatedDate
     @Column(nullable = false)
     val createdAt: Long = System.currentTimeMillis()
-)
+) : Serializable {
+  companion object {
+    private const val serialVersionUID = -3885319431007004288L
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+
+    if (other == null || javaClass != other.javaClass) return false
+
+    val log = other as Log?
+
+    return EqualsBuilder()
+        .appendSuper(super.equals(other))
+        .append(id, log!!.id)
+        .append(createdAt, log.createdAt)
+        .append(ip, log.ip)
+        .append(usr, log.usr)
+        .append(clientId, log.clientId)
+        .append(path, log.path)
+        .append(method, log.method)
+        .isEquals
+  }
+
+  override fun hashCode(): Int {
+    return HashCodeBuilder(17, 37)
+        .appendSuper(super.hashCode())
+        .append(id)
+        .append(ip)
+        .append(usr)
+        .append(clientId)
+        .append(path)
+        .append(method)
+        .append(createdAt)
+        .toHashCode()
+  }
+}

@@ -3,6 +3,8 @@ package com.saintdan.framework.po
 import com.saintdan.framework.constant.CommonsConstant
 import com.saintdan.framework.listener.PersistentListener
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
 import org.springframework.security.core.GrantedAuthority
@@ -107,6 +109,10 @@ data class Client(
     @Column(nullable = false)
     val version: Int = 0
 ) : ClientDetails {
+  companion object {
+    private const val serialVersionUID = 6500601540965188191L
+  }
+
   override fun getClientId(): String {
     return clientIdAlias
   }
@@ -166,5 +172,55 @@ data class Client(
 
   private fun str2Set(str: String): Set<String> {
     return if (StringUtils.isBlank(str)) emptySet() else str.split(CommonsConstant.COMMA).toHashSet()
+  }
+
+  override fun equals(o: Any?): Boolean {
+    if (this === o) return true
+
+    if (o == null || javaClass != o.javaClass) return false
+
+    val client = o as Client?
+
+    return EqualsBuilder()
+        .appendSuper(super.equals(o))
+        .append(id, client!!.id)
+        .append(accessTokenValiditySecondsAlias, client.accessTokenValiditySecondsAlias)
+        .append(refreshTokenValiditySecondsAlias, client.refreshTokenValiditySecondsAlias)
+        .append(createdAt, client.createdAt)
+        .append(createdBy, client.createdBy)
+        .append(lastModifiedAt, client.lastModifiedAt)
+        .append(lastModifiedBy, client.lastModifiedBy)
+        .append(version, client.version)
+        .append(clientIdAlias, client.clientIdAlias)
+        .append(resourceIdStr, client.resourceIdStr)
+        .append(clientSecretAlias, client.clientSecretAlias)
+        .append(scopeStr, client.scopeStr)
+        .append(authorizedGrantTypeStr, client.authorizedGrantTypeStr)
+        .append(registeredRedirectUriStr, client.registeredRedirectUriStr)
+        .append(authoritiesStr, client.authoritiesStr)
+        .append(additionalInformationStr, client.additionalInformationStr)
+        .isEquals
+  }
+
+  override fun hashCode(): Int {
+    return HashCodeBuilder(17, 37)
+        .appendSuper(super.hashCode())
+        .append(id)
+        .append(clientIdAlias)
+        .append(resourceIdStr)
+        .append(clientSecretAlias)
+        .append(scopeStr)
+        .append(authorizedGrantTypeStr)
+        .append(registeredRedirectUriStr)
+        .append(authoritiesStr)
+        .append(accessTokenValiditySecondsAlias)
+        .append(refreshTokenValiditySecondsAlias)
+        .append(additionalInformationStr)
+        .append(createdAt)
+        .append(createdBy)
+        .append(lastModifiedAt)
+        .append(lastModifiedBy)
+        .append(version)
+        .toHashCode()
   }
 }

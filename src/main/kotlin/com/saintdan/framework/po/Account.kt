@@ -2,8 +2,11 @@ package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.saintdan.framework.listener.PersistentListener
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
+import java.io.Serializable
 import javax.persistence.*
 
 /**
@@ -54,4 +57,40 @@ data class Account(
     @JoinColumn(name = "user_id")
     @JsonIgnore
     val user: User? = null
-)
+) : Serializable {
+  companion object {
+    private const val serialVersionUID = -6004454109313475045L
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+
+    if (other == null || javaClass != other.javaClass) return false
+
+    val accountObj = other as Account?
+
+    return EqualsBuilder()
+        .appendSuper(super.equals(other))
+        .append(id, accountObj!!.id)
+        .append(createdAt, accountObj.createdAt)
+        .append(createdBy, accountObj.createdBy)
+        .append(lastModifiedAt, accountObj.lastModifiedAt)
+        .append(lastModifiedBy, accountObj.lastModifiedBy)
+        .append(version, accountObj.version)
+        .append(account, accountObj.account)
+        .isEquals
+  }
+
+  override fun hashCode(): Int {
+    return HashCodeBuilder(17, 37)
+        .appendSuper(super.hashCode())
+        .append(id)
+        .append(account)
+        .append(createdAt)
+        .append(createdBy)
+        .append(lastModifiedAt)
+        .append(lastModifiedBy)
+        .append(version)
+        .toHashCode()
+  }
+}

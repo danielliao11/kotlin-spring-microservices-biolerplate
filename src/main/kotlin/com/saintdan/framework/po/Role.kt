@@ -2,8 +2,11 @@ package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.saintdan.framework.listener.PersistentListener
+import org.apache.commons.lang3.builder.EqualsBuilder
+import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Parameter
+import java.io.Serializable
 import javax.persistence.*
 
 /**
@@ -67,9 +70,47 @@ data class Role(
         inverseJoinColumns = [JoinColumn(name = "resource_id")])
     @JsonIgnore
     val resources: Set<Resource>? = emptySet()
-) {
+) : Serializable {
+  companion object {
+    private const val serialVersionUID = -5193344128221526323L
+  }
+
   @PreRemove
   private fun removeRolesFromUsers() {
     users!!.forEach { user -> user.roles.minus(this) }
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+
+    if (other == null || javaClass != other.javaClass) return false
+
+    val role = other as Role?
+
+    return EqualsBuilder()
+        .appendSuper(super.equals(other))
+        .append(id, role!!.id)
+        .append(createdAt, role.createdAt)
+        .append(createdBy, role.createdBy)
+        .append(lastModifiedAt, role.lastModifiedAt)
+        .append(lastModifiedBy, role.lastModifiedBy)
+        .append(version, role.version)
+        .append(name, role.name)
+        .append(description, role.description)
+        .isEquals
+  }
+
+  override fun hashCode(): Int {
+    return HashCodeBuilder(17, 37)
+        .appendSuper(super.hashCode())
+        .append(id)
+        .append(name)
+        .append(description)
+        .append(createdAt)
+        .append(createdBy)
+        .append(lastModifiedAt)
+        .append(lastModifiedBy)
+        .append(version)
+        .toHashCode()
   }
 }
