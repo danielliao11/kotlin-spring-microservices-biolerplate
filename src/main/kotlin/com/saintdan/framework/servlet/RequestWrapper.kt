@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
 
 /**
- * Multiple reader for HttpServletRequest.
+ * Multiple reader for [HttpServletRequest].
  *
  * @author <a href="http://github.com/saintdan">Liao Yifan</a>
  * @date 07/12/2017

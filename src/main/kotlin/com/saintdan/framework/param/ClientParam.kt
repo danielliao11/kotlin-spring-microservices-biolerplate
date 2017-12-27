@@ -12,16 +12,16 @@ import org.springframework.http.HttpMethod
  */
 data class ClientParam(
     @ApiModelProperty(hidden = true)
-    val id: Long? = 0,
+    var id: Long? = 0,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "nickname cannot be null.")
-    val name: String? = null,
+    var name: String? = null,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "scope cannot be null.")
-    val scope: String? = null,
+    var scope: String? = null,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "grantType cannot be null.")
-    val grantType: String? = null,
-    val accessTokenValiditySeconds: Int? = null,
-    val refreshTokenValiditySeconds: Int? = null
+    var grantType: String? = null,
+    var accessTokenValiditySeconds: Int? = null,
+    var refreshTokenValiditySeconds: Int? = null
 ) : BaseParam()
