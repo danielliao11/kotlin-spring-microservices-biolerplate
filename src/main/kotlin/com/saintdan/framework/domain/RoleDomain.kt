@@ -38,21 +38,21 @@ class RoleDomain(private val roleRepository: RoleRepository,
   @Transactional
   @Throws(NoSuchElementByIdException::class)
   fun update(param: RoleParam): Role {
-    val resource = roleRepository.findById(param.id!!) ?: throw NoSuchElementException()
-    return resource
-        .let { param2PO(param, it.get()) }
+    val role = roleRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
+    return role
+        .let { param2PO(param, it) }
         .let { roleRepository.save(it) }
   }
 
   @Transactional
   @Throws(NoSuchElementByIdException::class)
   fun deepDelete(id: Long) {
-    val resource = findById(id) ?: throw NoSuchElementException()
-    roleRepository.delete(resource)
+    val role = roleRepository.findById(id).orElseThrow { NoSuchElementException() }
+    roleRepository.delete(role)
   }
 
   private fun param2PO(param: RoleParam): Role {
-    val resources = if (param.resourceIds != null) resourceRepository.findAllById(param.resourceIds) else emptyList()
+    val resources = if (param.resourceIds != null) resourceRepository.findAllById(param.resourceIds!!) else emptyList()
     return Role(
         name = param.name ?: "",
         description = param.description ?: "",
@@ -61,7 +61,7 @@ class RoleDomain(private val roleRepository: RoleRepository,
   }
 
   private fun param2PO(param: RoleParam, role: Role): Role {
-    val resources = if (param.resourceIds != null) resourceRepository.findAllById(param.resourceIds) else emptyList()
+    val resources = if (param.resourceIds != null) resourceRepository.findAllById(param.resourceIds!!) else emptyList()
     return role.copy(
         name = param.name ?: role.name,
         description = param.description ?: role.description,
