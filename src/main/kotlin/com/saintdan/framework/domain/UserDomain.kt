@@ -39,21 +39,21 @@ class UserDomain(
   @Transactional
   @Throws(NoSuchElementByIdException::class)
   fun update(param: UserParam): User {
-    val resource = userRepository.findById(param.id!!) ?: throw NoSuchElementException()
-    return resource
-        .let { param2PO(param, it.get()) }
+    val user = userRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
+    return user
+        .let { param2PO(param, it) }
         .let { userRepository.save(it) }
   }
 
   @Transactional
   @Throws(NoSuchElementByIdException::class)
   fun deepDelete(id: Long) {
-    val resource = findById(id) ?: throw NoSuchElementException()
-    userRepository.delete(resource)
+    val user = userRepository.findById(id).orElseThrow { NoSuchElementException() }
+    userRepository.delete(user)
   }
 
   private fun param2PO(param: UserParam): User {
-    val roles = if (param.roleIds != null) roleRepository.findAllById(param.roleIds) else emptyList()
+    val roles = if (param.roleIds != null) roleRepository.findAllById(param.roleIds!!) else emptyList()
     return User(
         usr = param.usr!!,
         pwd = param.pwd!!,
@@ -64,7 +64,7 @@ class UserDomain(
   }
 
   private fun param2PO(param: UserParam, user: User): User {
-    val roles = if (param.roleIds != null) roleRepository.findAllById(param.roleIds) else emptyList()
+    val roles = if (param.roleIds != null) roleRepository.findAllById(param.roleIds!!) else emptyList()
     return user.copy(
         nickname = param.nickname ?: user.nickname,
         description = param.description ?: user.description,

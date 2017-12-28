@@ -1,7 +1,7 @@
 package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.saintdan.framework.listener.PersistentListener
+import com.saintdan.framework.listener.UpdateListener
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
@@ -19,7 +19,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "resources")
-@EntityListeners(PersistentListener::class)
+@EntityListeners(UpdateListener::class)
 data class Resource(
 
     @GenericGenerator(name = "resourceSequenceGenerator",
@@ -48,16 +48,16 @@ data class Resource(
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedAt: Long = System.currentTimeMillis(),
+    var lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedBy: Long = 0,
+    var lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
     @JsonIgnore
-    val version: Int = 0,
+    var version: Int = 0,
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "resources", cascade = [CascadeType.REFRESH])
     @JsonIgnore

@@ -36,16 +36,16 @@ class ResourceDomain(private val resourceRepository: ResourceRepository) {
   @Transactional
   @Throws(NoSuchElementByIdException::class)
   fun update(param: ResourceParam): Resource {
-    val resource = resourceRepository.findById(param.id!!) ?: throw NoSuchElementException()
+    val resource = resourceRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
     return resource
-        .let { param2PO(param, it.get()) }
+        .let { param2PO(param, it) }
         .let { resourceRepository.save(it) }
   }
 
   @Transactional
   @Throws(NoSuchElementByIdException::class)
   fun deepDelete(id: Long) {
-    val resource = findById(id) ?: throw NoSuchElementException()
+    val resource = resourceRepository.findById(id).orElseThrow { NoSuchElementException() }
     resourceRepository.delete(resource)
   }
 

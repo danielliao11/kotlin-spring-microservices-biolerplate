@@ -31,9 +31,9 @@ class ClientDomain(private val clientRepository: ClientRepository) {
 
   @Throws(Exception::class)
   @Transactional fun update(param: ClientParam): Client {
-    val client = clientRepository.findById(param.id!!) ?: throw NoSuchElementException()
+    val client = clientRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
     return client
-        .let { param2Po(param, it.get()) }
+        .let { param2Po(param, it) }
         .let { clientRepository.save(it)
     }
   }
