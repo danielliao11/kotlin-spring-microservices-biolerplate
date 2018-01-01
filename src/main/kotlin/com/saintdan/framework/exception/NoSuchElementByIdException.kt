@@ -10,6 +10,6 @@ import com.saintdan.framework.enums.ErrorType
  * @since JDK1.8
  */
 class NoSuchElementByIdException(
-    override val message: String?,
+    override val message: String? = "No such element",
     val code: String = ErrorType.SYS0004.name
 ) : NoSuchElementException()

@@ -39,8 +39,7 @@ class RoleDomain(private val roleRepository: RoleRepository,
   @Throws(NoSuchElementByIdException::class)
   fun update(param: RoleParam): Role {
     val role = roleRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
-    return role
-        .let { param2PO(param, it) }
+    return param2PO(param, role)
         .let { roleRepository.save(it) }
   }
 

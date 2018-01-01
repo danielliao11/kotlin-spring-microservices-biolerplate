@@ -40,8 +40,7 @@ class UserDomain(
   @Throws(NoSuchElementByIdException::class)
   fun update(param: UserParam): User {
     val user = userRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
-    return user
-        .let { param2PO(param, it) }
+    return param2PO(param, user)
         .let { userRepository.save(it) }
   }
 

@@ -37,8 +37,7 @@ class ResourceDomain(private val resourceRepository: ResourceRepository) {
   @Throws(NoSuchElementByIdException::class)
   fun update(param: ResourceParam): Resource {
     val resource = resourceRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
-    return resource
-        .let { param2PO(param, it) }
+    return param2PO(param, resource)
         .let { resourceRepository.save(it) }
   }
 

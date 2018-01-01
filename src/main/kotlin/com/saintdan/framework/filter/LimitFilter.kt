@@ -44,8 +44,8 @@ class LimitFilter(private val env: Environment) : Filter {
     if (request is HttpServletRequest) {
       val req = RequestWrapper(request)
       val LIMIT_KEY = "Limit-Key"
-      val range = env.getProperty("request.range") ?: "10000"
-      val count = env.getProperty("request.count") ?: "3"
+      val range = env.getProperty("request.range", "10000")
+      val count = env.getProperty("request.count", "3")
       val limitKey = req.getHeader(LIMIT_KEY)
       if (StringUtils.isNotBlank(limitKey) && !limit(RequestLimit(RemoteAddressUtils.getRealIp(req),
           req.requestURI,
