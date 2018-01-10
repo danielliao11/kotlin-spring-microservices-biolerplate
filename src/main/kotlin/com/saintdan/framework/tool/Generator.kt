@@ -9,9 +9,21 @@ import org.apache.commons.text.RandomStringGenerator
  * @since JDK1.8
  */
 object Generator {
-  fun generatorOfLetterAndDigit(): RandomStringGenerator {
-    return RandomStringGenerator.Builder()
-        .filteredBy(CharacterPredicates.LETTERS, CharacterPredicates.DIGITS)
-        .build()
-  }
+
+  fun generatorOfLetterAndDigitAndSymbol(): RandomStringGenerator =
+      RandomStringGenerator.Builder()
+          .withinRange(33, 126)
+          .build()
+
+  fun generatorOfLetterAndDigit(): RandomStringGenerator =
+      RandomStringGenerator.Builder()
+          .withinRange(33, 126)
+          .filteredBy(CharacterPredicates.LETTERS, CharacterPredicates.DIGITS)
+          .build()
+
+  fun generatorOfDigit(): RandomStringGenerator =
+      RandomStringGenerator.Builder()
+          .withinRange(33, 126)
+          .filteredBy(CharacterPredicates.DIGITS)
+          .build()
 }
