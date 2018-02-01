@@ -9,6 +9,8 @@ import com.saintdan.framework.exception.NoSuchElementByIdException
 import com.saintdan.framework.param.ClientParam
 import com.saintdan.framework.po.Client
 import com.saintdan.framework.vo.ErrorVO
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
@@ -29,48 +31,51 @@ class ClientController(
 
   @PostMapping
   @ApiOperation(value = "Create client", response = Client::class)
-  fun create(@RequestBody param: ClientParam): ResponseEntity<Any> {
-    return try {
-      clientDomain.create(param)
-          .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
-    } catch (e: ElementAlreadyExistsException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.RESOURCE.name)
-    }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun create(@RequestBody param: ClientParam): ResponseEntity<Any> =
+      try {
+        clientDomain.create(param).let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
+      } catch (e: ElementAlreadyExistsException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.CLIENT.uri())
+      }
 
   @GetMapping
-  fun all(): ResponseEntity<MutableList<Client>> {
-    return clientDomain.all()
-        .let { ResponseEntity.ok(it) }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun all(): ResponseEntity<MutableList<Client>> = clientDomain.all().let { ResponseEntity.ok(it) }
 
   @GetMapping("{id}")
   @ApiOperation(value = "Detail of user", response = Client::class)
-  fun detail(@PathVariable id: Long): ResponseEntity<Any> {
-    return clientDomain.findById(id)
-        .let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
-  }
-  
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun detail(@PathVariable id: Long): ResponseEntity<Any> =
+    clientDomain.findById(id).let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
+
   @PutMapping("{id}")
   @ApiOperation(value = "Update user", response = Client::class)
-  fun update(@RequestBody param: ClientParam, @PathVariable id: Long): ResponseEntity<Any> {
-    return try {
-      clientDomain.update(param)
-          .let { ResponseEntity.ok(it) }
-    } catch (e: NoSuchElementByIdException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.RESOURCE.name)
-    }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun update(@RequestBody param: ClientParam, @PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        clientDomain.update(param).let { ResponseEntity.ok(it) }
+      } catch (e: NoSuchElementByIdException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.CLIENT.uri())
+      }
 
   private val logger = LoggerFactory.getLogger(ClientController::class.java)
 }

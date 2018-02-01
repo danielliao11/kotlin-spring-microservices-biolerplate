@@ -35,13 +35,12 @@ class LoginController(
   @ApiImplicitParams(
       ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true),
       ApiImplicitParam(name = "Limit-Key", value = "limit key", paramType = "header", dataType = "string"))
-  fun login(request: HttpServletRequest, @RequestBody param: LoginParam): ResponseEntity<*> {
-    return try {
-      loginService.login(param, request)
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.LOGIN.name)
-    }
-  }
+  fun login(request: HttpServletRequest, @RequestBody param: LoginParam): ResponseEntity<*> =
+      try {
+        loginService.login(param, request)
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.LOGIN.uri())
+      }
 
   private val logger = LoggerFactory.getLogger(LoginController::class.java)
 }

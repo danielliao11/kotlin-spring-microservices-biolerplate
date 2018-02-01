@@ -9,6 +9,8 @@ import com.saintdan.framework.exception.NoSuchElementByIdException
 import com.saintdan.framework.param.RoleParam
 import com.saintdan.framework.po.Role
 import com.saintdan.framework.vo.ErrorVO
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
@@ -29,63 +31,61 @@ class RoleController(
 
   @PostMapping
   @ApiOperation(value = "Create role", response = Role::class)
-  fun create(@RequestBody param: RoleParam): ResponseEntity<Any> {
-    return try {
-      roleDomain.create(param)
-          .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
-    } catch (e: ElementAlreadyExistsException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.ROLE.name)
-    }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun create(@RequestBody param: RoleParam): ResponseEntity<Any> =
+      try {
+        roleDomain.create(param)
+            .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
+      } catch (e: ElementAlreadyExistsException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.ROLE.uri())
+      }
 
   @GetMapping
-  fun all(): ResponseEntity<MutableList<Role>> {
-    return roleDomain.all()
-        .let { ResponseEntity.ok(it) }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun all(): ResponseEntity<MutableList<Role>> = roleDomain.all().let { ResponseEntity.ok(it) }
 
   @GetMapping("{id}")
   @ApiOperation(value = "Detail of role", response = Role::class)
-  fun detail(@PathVariable id: Long): ResponseEntity<Any> {
-    return roleDomain.findById(id)
-        .let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
-  }
-  
+  fun detail(@PathVariable id: Long): ResponseEntity<Any> =
+    roleDomain.findById(id).let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
+
   @PutMapping("{id}")
   @ApiOperation(value = "Update role", response = Role::class)
-  fun update(@RequestBody param: RoleParam, @PathVariable id: Long): ResponseEntity<Any> {
-    return try {
-      roleDomain.update(param)
-          .let { ResponseEntity.ok(it) }
-    } catch (e: NoSuchElementByIdException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.ROLE.name)
-    }
-  }
-  
+  fun update(@RequestBody param: RoleParam, @PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        roleDomain.update(param)
+            .let { ResponseEntity.ok(it) }
+      } catch (e: NoSuchElementByIdException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.ROLE.uri())
+      }
+
   @DeleteMapping("{id}")
-  fun delete(@PathVariable id: Long): ResponseEntity<Any> {
-    return try {
-      roleDomain.deepDelete(id)
-          .let { ResponseEntity.noContent().build() }
-    } catch (e: NoSuchElementByIdException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.DELETE, ResourceUri.ROLE.name)
-    }
-  }
+  fun delete(@PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        roleDomain.deepDelete(id)
+            .let { ResponseEntity.noContent().build() }
+      } catch (e: NoSuchElementByIdException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.DELETE, ResourceUri.ROLE.uri())
+      }
 
   private val logger = LoggerFactory.getLogger(ResourceController::class.java)
 }

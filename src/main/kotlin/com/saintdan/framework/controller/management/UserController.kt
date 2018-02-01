@@ -34,66 +34,57 @@ class UserController(
   @ApiImplicitParams(
       ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
   )
-  fun create(@RequestBody param: UserParam): ResponseEntity<Any> {
-    return try {
-      userDomain.create(param)
-          .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
-    } catch (e: ElementAlreadyExistsException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.USER.name)
-    }
-  }
+  fun create(@RequestBody param: UserParam): ResponseEntity<Any> =
+      try {
+        userDomain.create(param)
+            .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
+      } catch (e: ElementAlreadyExistsException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.USER.uri())
+      }
 
   @GetMapping
   @ApiImplicitParams(
       ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
   )
-  fun all(): ResponseEntity<MutableList<User>> {
-    return userDomain.all()
-        .let { ResponseEntity.ok(it) }
-  }
+  fun all(): ResponseEntity<MutableList<User>> = userDomain.all().let { ResponseEntity.ok(it) }
 
   @GetMapping("{id}")
   @ApiOperation(value = "Detail of user", response = User::class)
-  fun detail(@PathVariable id: Long): ResponseEntity<Any> {
-    return userDomain.findById(id)
-        .let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
-  }
+  fun detail(@PathVariable id: Long): ResponseEntity<Any> = userDomain.findById(id).let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
 
   @PutMapping("{id}")
   @ApiOperation(value = "Update user", response = User::class)
-  fun update(@RequestBody param: UserParam, @PathVariable id: Long): ResponseEntity<Any> {
-    return try {
-      userDomain.update(param)
-          .let { ResponseEntity.ok(it) }
-    } catch (e: NoSuchElementByIdException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.USER.name)
-    }
-  }
-  
+  fun update(@RequestBody param: UserParam, @PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        userDomain.update(param)
+            .let { ResponseEntity.ok(it) }
+      } catch (e: NoSuchElementByIdException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.USER.uri())
+      }
+
   @DeleteMapping("{id}")
-  fun delete(@PathVariable id: Long): ResponseEntity<Any> {
-    return try {
-      userDomain.deepDelete(id)
-          .let { ResponseEntity.noContent().build() }
-    } catch (e: NoSuchElementByIdException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.DELETE, ResourceUri.USER.name)
-    }
-  }
+  fun delete(@PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        userDomain.deepDelete(id)
+            .let { ResponseEntity.noContent().build() }
+      } catch (e: NoSuchElementByIdException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.DELETE, ResourceUri.USER.uri())
+      }
 
   private val logger = LoggerFactory.getLogger(UserController::class.java)
 }

@@ -9,6 +9,8 @@ import com.saintdan.framework.exception.NoSuchElementByIdException
 import com.saintdan.framework.param.ResourceParam
 import com.saintdan.framework.po.Resource
 import com.saintdan.framework.vo.ErrorVO
+import io.swagger.annotations.ApiImplicitParam
+import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
@@ -29,63 +31,67 @@ class ResourceController(
 
   @PostMapping
   @ApiOperation(value = "Create resource", response = Resource::class)
-  fun create(@RequestBody param: ResourceParam): ResponseEntity<Any> {
-    return try {
-      resourceDomain.create(param)
-          .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
-    } catch (e: ElementAlreadyExistsException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.RESOURCE.name)
-    }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun create(@RequestBody param: ResourceParam): ResponseEntity<Any> =
+      try {
+        resourceDomain.create(param).let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
+      } catch (e: ElementAlreadyExistsException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.POST, ResourceUri.RESOURCE.uri())
+      }
 
   @GetMapping
-  fun all(): ResponseEntity<MutableList<Resource>> {
-    return resourceDomain.all()
-        .let { ResponseEntity.ok(it) }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun all(): ResponseEntity<MutableList<Resource>> = resourceDomain.all().let { ResponseEntity.ok(it) }
 
   @GetMapping("{id}")
   @ApiOperation(value = "Detail of resource", response = Resource::class)
-  fun detail(@PathVariable id: Long): ResponseEntity<Any> {
-    return resourceDomain.findById(id)
-        .let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun detail(@PathVariable id: Long): ResponseEntity<Any> =
+    resourceDomain.findById(id).let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
 
   @PutMapping("{id}")
   @ApiOperation(value = "Update resource", response = Resource::class)
-  fun update(@RequestBody param: ResourceParam, @PathVariable id: Long): ResponseEntity<Any> {
-    return try {
-      resourceDomain.update(param)
-          .let { ResponseEntity.ok(it) }
-    } catch (e: NoSuchElementByIdException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.RESOURCE.name)
-    }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun update(@RequestBody param: ResourceParam, @PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        resourceDomain.update(param).let { ResponseEntity.ok(it) }
+      } catch (e: NoSuchElementByIdException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.RESOURCE.uri())
+      }
 
   @DeleteMapping("{id}")
-  fun delete(@PathVariable id: Long): ResponseEntity<Any> {
-    return try {
-      resourceDomain.deepDelete(id)
-          .let { ResponseEntity.noContent().build() }
-    } catch (e: NoSuchElementByIdException) {
-      ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-          error = e.code,
-          error_description = e.localizedMessage
-      ))
-    } catch (e: Exception) {
-      logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.DELETE, ResourceUri.RESOURCE.name)
-    }
-  }
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun delete(@PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        resourceDomain.deepDelete(id).let { ResponseEntity.noContent().build() }
+      } catch (e: NoSuchElementByIdException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = e.code,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.DELETE, ResourceUri.RESOURCE.uri())
+      }
 
   private val logger = LoggerFactory.getLogger(ResourceController::class.java)
 }
