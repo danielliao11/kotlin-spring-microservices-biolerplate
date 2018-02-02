@@ -1,13 +1,15 @@
 package com.saintdan.framework.domain
 
 import com.saintdan.framework.exception.ElementAlreadyExistsException
-import com.saintdan.framework.exception.NoSuchElementByIdException
 import com.saintdan.framework.param.UserParam
 import com.saintdan.framework.po.User
 import com.saintdan.framework.repo.RoleRepository
 import com.saintdan.framework.repo.UserRepository
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.persistence.EntityNotFoundException
 
 /**
  * @author <a href="http://github.com/saintdan">Liao Yifan</a>
@@ -37,19 +39,15 @@ class UserDomain(
   }
 
   @Transactional
-  @Throws(NoSuchElementByIdException::class)
-  fun update(param: UserParam): User {
-    val user = userRepository.findById(param.id!!).orElseThrow { NoSuchElementException() }
-    return param2PO(param, user)
-        .let { userRepository.save(it) }
-  }
+  @Throws(EntityNotFoundException::class, JpaObjectRetrievalFailureException::class)
+  fun update(id: Long, param: UserParam): User =
+      userRepository.getOne(id)
+          .let { param2PO(param, it) }
+          .let { userRepository.save(it) }
 
   @Transactional
-  @Throws(NoSuchElementByIdException::class)
-  fun deepDelete(id: Long) {
-    val user = userRepository.findById(id).orElseThrow { NoSuchElementException() }
-    userRepository.delete(user)
-  }
+  @Throws(EmptyResultDataAccessException::class)
+  fun deepDelete(id: Long) = userRepository.deleteById(id)
 
   private fun param2PO(param: UserParam): User {
     val roles = if (param.roleIds != null) roleRepository.findAllById(param.roleIds!!) else emptyList()

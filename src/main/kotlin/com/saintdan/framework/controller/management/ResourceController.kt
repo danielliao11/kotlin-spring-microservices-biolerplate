@@ -67,7 +67,7 @@ class ResourceController(
   )
   fun update(@RequestBody param: ResourceParam, @PathVariable id: Long): ResponseEntity<Any> =
       try {
-        resourceDomain.update(param).let { ResponseEntity.ok(it) }
+        resourceDomain.update(id, param).let { ResponseEntity.ok(it) }
       } catch (e: NoSuchElementByIdException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
             error = e.code,

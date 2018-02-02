@@ -34,10 +34,10 @@ data class Resource(
     val id: Long = 0,
 
     @Column(unique = true, nullable = false, length = 20)
-    val name: String = "",
+    val name: String? = null,
 
     @Column(length = 500)
-    val description: String = "",
+    val description: String? = null,
 
     @Column(nullable = false, updatable = false)
     val createdAt: Long = System.currentTimeMillis(),
@@ -68,7 +68,7 @@ data class Resource(
   }
 
   override fun getAuthority(): String {
-    return name
+    return name ?: ""
   }
 
   override fun equals(other: Any?): Boolean {

@@ -3,9 +3,9 @@ package com.saintdan.framework.controller.management
 import com.saintdan.framework.component.LogHelper
 import com.saintdan.framework.constant.ResourcePath
 import com.saintdan.framework.domain.UserDomain
+import com.saintdan.framework.enums.ErrorType
 import com.saintdan.framework.enums.ResourceUri
 import com.saintdan.framework.exception.ElementAlreadyExistsException
-import com.saintdan.framework.exception.NoSuchElementByIdException
 import com.saintdan.framework.param.UserParam
 import com.saintdan.framework.po.User
 import com.saintdan.framework.vo.ErrorVO
@@ -13,10 +13,13 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.web.bind.annotation.*
+import javax.persistence.EntityNotFoundException
 
 /**
  * @author <a href="http://github.com/saintdan">Liao Yifan</a>
@@ -36,8 +39,7 @@ class UserController(
   )
   fun create(@RequestBody param: UserParam): ResponseEntity<Any> =
       try {
-        userDomain.create(param)
-            .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
+        userDomain.create(param).let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
       } catch (e: ElementAlreadyExistsException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
             error = e.code,
@@ -61,11 +63,16 @@ class UserController(
   @ApiOperation(value = "Update user", response = User::class)
   fun update(@RequestBody param: UserParam, @PathVariable id: Long): ResponseEntity<Any> =
       try {
-        userDomain.update(param)
+        userDomain.update(id, param)
             .let { ResponseEntity.ok(it) }
-      } catch (e: NoSuchElementByIdException) {
+      } catch (e: EntityNotFoundException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-            error = e.code,
+            error = ErrorType.SYS0004.name,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: JpaObjectRetrievalFailureException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = ErrorType.SYS0004.name,
             error_description = e.localizedMessage
         ))
       } catch (e: Exception) {
@@ -77,9 +84,9 @@ class UserController(
       try {
         userDomain.deepDelete(id)
             .let { ResponseEntity.noContent().build() }
-      } catch (e: NoSuchElementByIdException) {
+      } catch (e: EmptyResultDataAccessException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-            error = e.code,
+            error = ErrorType.SYS0004.name,
             error_description = e.localizedMessage
         ))
       } catch (e: Exception) {
