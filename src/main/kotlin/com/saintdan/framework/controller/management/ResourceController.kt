@@ -3,9 +3,9 @@ package com.saintdan.framework.controller.management
 import com.saintdan.framework.component.LogHelper
 import com.saintdan.framework.constant.ResourcePath
 import com.saintdan.framework.domain.ResourceDomain
+import com.saintdan.framework.enums.ErrorType
 import com.saintdan.framework.enums.ResourceUri
 import com.saintdan.framework.exception.ElementAlreadyExistsException
-import com.saintdan.framework.exception.NoSuchElementByIdException
 import com.saintdan.framework.param.ResourceParam
 import com.saintdan.framework.po.Resource
 import com.saintdan.framework.vo.ErrorVO
@@ -13,10 +13,13 @@ import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiImplicitParams
 import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.web.bind.annotation.*
+import javax.persistence.EntityNotFoundException
 
 /**
  * @author <a href="http://github.com/saintdan">Liao Yifan</a>
@@ -68,9 +71,14 @@ class ResourceController(
   fun update(@RequestBody param: ResourceParam, @PathVariable id: Long): ResponseEntity<Any> =
       try {
         resourceDomain.update(id, param).let { ResponseEntity.ok(it) }
-      } catch (e: NoSuchElementByIdException) {
+      } catch (e: EntityNotFoundException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-            error = e.code,
+            error = ErrorType.SYS0004.name,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: JpaObjectRetrievalFailureException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = ErrorType.SYS0004.name,
             error_description = e.localizedMessage
         ))
       } catch (e: Exception) {
@@ -84,9 +92,9 @@ class ResourceController(
   fun delete(@PathVariable id: Long): ResponseEntity<Any> =
       try {
         resourceDomain.deepDelete(id).let { ResponseEntity.noContent().build() }
-      } catch (e: NoSuchElementByIdException) {
+      } catch (e: EmptyResultDataAccessException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
-            error = e.code,
+            error = ErrorType.SYS0004.name,
             error_description = e.localizedMessage
         ))
       } catch (e: Exception) {

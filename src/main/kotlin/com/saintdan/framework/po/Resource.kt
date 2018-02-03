@@ -34,7 +34,7 @@ data class Resource(
     val id: Long = 0,
 
     @Column(unique = true, nullable = false, length = 20)
-    val name: String? = null,
+    val name: String = "",
 
     @Column(length = 500)
     val description: String? = null,
@@ -67,9 +67,7 @@ data class Resource(
     private const val serialVersionUID = 6298843159549723556L
   }
 
-  override fun getAuthority(): String {
-    return name ?: ""
-  }
+  override fun getAuthority(): String = name
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -104,4 +102,17 @@ data class Resource(
         .append(version)
         .toHashCode()
   }
+
+  override fun toString(): String =
+      StringBuilder("Resource(")
+          .append("id = ").append(id)
+          .append(", name = ").append(name)
+          .append(", description = ").append(description)
+          .append(", createdAt = ").append(createdAt)
+          .append(", createdBy = ").append(createdBy)
+          .append(", lastModifiedAt = ").append(lastModifiedAt)
+          .append(", lastModifiedBy = ").append(lastModifiedBy)
+          .append(", version = ").append(version)
+          .append(")")
+          .toString()
 }

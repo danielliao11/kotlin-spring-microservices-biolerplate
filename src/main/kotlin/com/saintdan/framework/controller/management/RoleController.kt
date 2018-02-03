@@ -63,6 +63,9 @@ class RoleController(
 
   @PutMapping("{id}")
   @ApiOperation(value = "Update role", response = Role::class)
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
   fun update(@RequestBody param: RoleParam, @PathVariable id: Long): ResponseEntity<Any> =
       try {
         roleDomain.update(id, param).let { ResponseEntity.ok(it) }
@@ -80,7 +83,32 @@ class RoleController(
         logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.ROLE.uri())
       }
 
+  @PatchMapping("{id}")
+  @ApiOperation(value = "Update roles' resources", response = Role::class)
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun updateResources(@RequestBody param: RoleParam, @PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        roleDomain.updateResources(id, param).let { ResponseEntity.ok(it) }
+      } catch (e: EntityNotFoundException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = ErrorType.SYS0004.name,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: JpaObjectRetrievalFailureException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = ErrorType.SYS0004.name,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.ROLE.uri())
+      }
+
   @DeleteMapping("{id}")
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
   fun delete(@PathVariable id: Long): ResponseEntity<Any> =
       try {
         roleDomain.deepDelete(id).let { ResponseEntity.noContent().build() }

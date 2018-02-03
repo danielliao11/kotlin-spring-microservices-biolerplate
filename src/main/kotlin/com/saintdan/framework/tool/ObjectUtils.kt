@@ -11,23 +11,23 @@ import java.math.BigDecimal
 
 object ObjectUtils {
 
-  fun parse(param: String?, value: String?): String? = if (isEmpty(param)) value else param
+  fun parse(param: String?, value: String?): String = (if (isEmpty(param)) value else param) ?: ""
 
   fun parse(param: Array<*>?, value: Array<*>?): Array<*>?  = if (isEmpty(param)) value else param
 
   fun parse(param: Set<*>?, value: Set<*>?): Set<*>? = if (isEmpty(param)) value else param
 
-  fun parse(param: BigDecimal?, value: BigDecimal?): BigDecimal? = if (isEmpty(param)) value else param
+  fun parse(param: BigDecimal?, value: BigDecimal?): BigDecimal? = (if (isEmpty(param)) value else param) ?: BigDecimal.ZERO
 
-  fun parse(param: Int?, value: Int?): Int? = if (isEmpty(param)) value else param
+  fun parse(param: Int?, value: Int?): Int? = (if (isEmpty(param)) value else param) ?: 0
 
-  fun parse(param: Long?, value: Long?): Long? = if (isEmpty(param)) value else param
+  fun parse(param: Long?, value: Long?): Long? = (if (isEmpty(param)) value else param) ?: 0
 
-  fun parse(param: Double?, value: Double?): Double? = if (isEmpty(param)) value else param
+  fun parse(param: Double?, value: Double?): Double? = (if (isEmpty(param)) value else param) ?: 0.0
 
   fun parse(param: Float?, value: Float?): Float? = if (isEmpty(param)) value else param
 
-  fun parse(param: Short?, value: Short?): Short? = if (isEmpty(param)) value else param
+  fun parse(param: Short?, value: Short?): Short? = (if (isEmpty(param)) value else param) ?: 0
 
   fun parse(param: Byte?, value: Byte?): Byte? = if (isEmpty(param)) value else param
 
@@ -54,5 +54,4 @@ object ObjectUtils {
   fun isEmpty(v: Byte?): Boolean = v == null
 
   fun isEmpty(v: Boolean?): Boolean = v == null
-
 }

@@ -2,9 +2,11 @@ package com.saintdan.framework.domain
 
 import com.saintdan.framework.exception.ElementAlreadyExistsException
 import com.saintdan.framework.param.RoleParam
+import com.saintdan.framework.po.Resource
 import com.saintdan.framework.po.Role
 import com.saintdan.framework.repo.ResourceRepository
 import com.saintdan.framework.repo.RoleRepository
+import com.saintdan.framework.tool.ObjectUtils
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.stereotype.Service
@@ -18,14 +20,15 @@ import javax.persistence.EntityNotFoundException
  */
 @Service
 @Transactional(readOnly = true)
-class RoleDomain(private val roleRepository: RoleRepository,
-                 private val resourceRepository: ResourceRepository) {
+class RoleDomain(
+    private val roleRepository: RoleRepository,
+    private val resourceRepository: ResourceRepository) {
 
   @Transactional
   @Throws(ElementAlreadyExistsException::class)
   fun create(param: RoleParam): Role =
       nameExists(param.name!!)
-          .let { param2PO(param) }
+          .let { param2Po(param) }
           .let { roleRepository.save(it) }
 
   fun all(): MutableList<Role> = roleRepository.findAll()
@@ -36,30 +39,34 @@ class RoleDomain(private val roleRepository: RoleRepository,
   @Throws(EntityNotFoundException::class, JpaObjectRetrievalFailureException::class)
   fun update(id: Long, param: RoleParam): Role =
       roleRepository.getOne(id)
-          .let { param2PO(param, it) }
+          .let { param2Po(param, it) }
           .let { roleRepository.save(it) }
+
+  @Transactional
+  @Throws(EntityNotFoundException::class, JpaObjectRetrievalFailureException::class)
+  fun updateResources(id: Long, param: RoleParam): Role {
+    val role = roleRepository.getOne(id)
+    role.resources = getResources(param.resourceIds!!)
+    return roleRepository.save(role)
+  }
 
   @Transactional
   @Throws(EmptyResultDataAccessException::class)
   fun deepDelete(id: Long) = roleRepository.deleteById(id)
 
-  private fun param2PO(param: RoleParam): Role {
-    val resources = if (param.resourceIds != null) resourceRepository.findAllById(param.resourceIds!!) else emptyList()
-    return Role(
-        name = param.name ?: "",
-        description = param.description ?: "",
-        resources = resources.toMutableSet()
-    )
-  }
+  private fun param2Po(param: RoleParam): Role =
+      Role(
+          name = param.name ?: "",
+          description = param.description ?: ""
+      )
 
-  private fun param2PO(param: RoleParam, role: Role): Role {
-    val resources = if (param.resourceIds != null) resourceRepository.findAllById(param.resourceIds!!) else emptyList()
-    return role.copy(
-        name = param.name ?: role.name,
-        description = param.description ?: role.description,
-        resources = if (param.resourceIds != null) resources.toMutableSet() else role.resources
-    )
-  }
+  private fun param2Po(param: RoleParam, role: Role): Role =
+      role.copy(
+          name = ObjectUtils.parse(param.name, role.name),
+          description = ObjectUtils.parse(param.description, role.description)
+      )
+
+  private fun getResources(ids: Set<Long>): Set<Resource> = resourceRepository.findAllById(ids).toMutableSet()
 
   @Throws(ElementAlreadyExistsException::class)
   private fun nameExists(name: String) {

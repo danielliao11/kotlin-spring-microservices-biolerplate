@@ -57,14 +57,41 @@ class UserController(
 
   @GetMapping("{id}")
   @ApiOperation(value = "Detail of user", response = User::class)
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
   fun detail(@PathVariable id: Long): ResponseEntity<Any> = userDomain.findById(id).let { if (it == null) ResponseEntity.ok().build() else ResponseEntity.ok(it) }
 
   @PutMapping("{id}")
   @ApiOperation(value = "Update user", response = User::class)
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
   fun update(@RequestBody param: UserParam, @PathVariable id: Long): ResponseEntity<Any> =
       try {
-        userDomain.update(id, param)
-            .let { ResponseEntity.ok(it) }
+        userDomain.update(id, param).let { ResponseEntity.ok(it) }
+      } catch (e: EntityNotFoundException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = ErrorType.SYS0004.name,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: JpaObjectRetrievalFailureException) {
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
+            error = ErrorType.SYS0004.name,
+            error_description = e.localizedMessage
+        ))
+      } catch (e: Exception) {
+        logHelper.log(HttpStatus.INTERNAL_SERVER_ERROR, logger, e, HttpMethod.PUT, ResourceUri.USER.uri())
+      }
+
+  @PatchMapping("{id}")
+  @ApiOperation(value = "Update users' roles", response = User::class)
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
+  fun updateRoles(@RequestBody param: UserParam, @PathVariable id: Long): ResponseEntity<Any> =
+      try {
+        userDomain.updateRoles(id, param).let { ResponseEntity.ok(it) }
       } catch (e: EntityNotFoundException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
             error = ErrorType.SYS0004.name,
@@ -80,10 +107,12 @@ class UserController(
       }
 
   @DeleteMapping("{id}")
+  @ApiImplicitParams(
+      ApiImplicitParam(name = "Authorization", value = "token", paramType = "header", dataType = "string", required = true)
+  )
   fun delete(@PathVariable id: Long): ResponseEntity<Any> =
       try {
-        userDomain.deepDelete(id)
-            .let { ResponseEntity.noContent().build() }
+        userDomain.deepDelete(id).let { ResponseEntity.noContent().build() }
       } catch (e: EmptyResultDataAccessException) {
         ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorVO(
             error = ErrorType.SYS0004.name,
