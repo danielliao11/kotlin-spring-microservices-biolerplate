@@ -1,5 +1,5 @@
 group 'com.saintdan.framework'
-version '1.0.0.RELEASE'
+version '1.0.1.RELEASE'
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
