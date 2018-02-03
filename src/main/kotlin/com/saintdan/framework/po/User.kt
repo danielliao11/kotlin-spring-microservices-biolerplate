@@ -1,7 +1,7 @@
 package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.saintdan.framework.listener.PersistentListener
+import com.saintdan.framework.listener.UpdateListener
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
@@ -21,7 +21,7 @@ import javax.persistence.*
 @Entity
 @Table(name = "users")
 @NamedEntityGraph(name = "User.roles", attributeNodes = [NamedAttributeNode("roles")])
-@EntityListeners(PersistentListener::class)
+@EntityListeners(UpdateListener::class)
 data class User(
 
     @GenericGenerator(name = "userSequenceGenerator",
@@ -78,16 +78,16 @@ data class User(
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedAt: Long = System.currentTimeMillis(),
+    var lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedBy: Long = 0,
+    var lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
     @JsonIgnore
-    val version: Int = 0,
+    var version: Int = 0,
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REFRESH])
     @JoinTable(
@@ -95,11 +95,11 @@ data class User(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "role_id")])
     @JsonIgnore
-    val roles: Set<Role> = emptySet(),
+    var roles: Set<Role> = emptySet(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = [CascadeType.REMOVE])
     @JsonIgnore
-    val accounts: Set<Account> = emptySet()
+    var accounts: Set<Account> = emptySet()
 ) : UserDetails {
   companion object {
     private const val serialVersionUID = 6298843159549723556L
@@ -108,7 +108,7 @@ data class User(
   override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
     val authorities = mutableListOf<GrantedAuthority>()
     roles
-        .forEach { it.resources!!
+        .forEach { it.resources
             .forEach { authorities.add(SimpleGrantedAuthority(it.authority)) } }
     return authorities
   }
@@ -186,4 +186,26 @@ data class User(
         .append(version)
         .toHashCode()
   }
+
+  override fun toString(): String =
+      StringBuilder("User(")
+          .append("id = ").append(id)
+          .append(", nickname = ").append(nickname)
+          .append(", usr = ").append(usr)
+          .append(", pwd = ").append(pwd)
+          .append(", description = ").append(description)
+          .append(", lastLoginAt = ").append(lastLoginAt)
+          .append(", ip = ").append(ip)
+          .append(", isAccountNonExpiredAlias = ").append(isAccountNonExpiredAlias)
+          .append(", isAccountNonLockedAlias = ").append(isAccountNonLockedAlias)
+          .append(", isCredentialsNonExpiredAlias = ").append(isCredentialsNonExpiredAlias)
+          .append(", isCredentialsNonExpiredAlias = ").append(isCredentialsNonExpiredAlias)
+          .append(", isEnabledAlias = ").append(isEnabledAlias)
+          .append(", createdAt = ").append(createdAt)
+          .append(", createdBy = ").append(createdBy)
+          .append(", lastModifiedAt = ").append(lastModifiedAt)
+          .append(", lastModifiedBy = ").append(lastModifiedBy)
+          .append(", version = ").append(version)
+          .append(")")
+          .toString()
 }

@@ -10,6 +10,6 @@ import com.saintdan.framework.enums.ErrorType
  * @since JDK1.8
  */
 class ElementAlreadyExistsException(
-    override val message: String?,
+    override val message: String? = "Element already exists",
     val code: String = ErrorType.SYS0003.name
 ) : Exception()

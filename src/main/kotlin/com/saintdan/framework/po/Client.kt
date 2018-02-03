@@ -1,7 +1,7 @@
 package com.saintdan.framework.po
 
 import com.saintdan.framework.constant.CommonsConstant
-import com.saintdan.framework.listener.PersistentListener
+import com.saintdan.framework.listener.UpdateListener
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
@@ -21,7 +21,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "clients")
-@EntityListeners(PersistentListener::class)
+@EntityListeners(UpdateListener::class)
 data class Client(
     @GenericGenerator(name = "clientSequenceGenerator",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
@@ -100,14 +100,14 @@ data class Client(
     val createdBy: Long = 0,
 
     @Column(nullable = false)
-    val lastModifiedAt: Long = System.currentTimeMillis(),
+    var lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
-    val lastModifiedBy: Long = 0,
+    var lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
-    val version: Int = 0
+    var version: Int = 0
 ) : ClientDetails {
   companion object {
     private const val serialVersionUID = 6500601540965188191L

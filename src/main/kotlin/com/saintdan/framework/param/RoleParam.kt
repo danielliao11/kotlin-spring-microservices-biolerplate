@@ -1,7 +1,6 @@
 package com.saintdan.framework.param
 
 import com.saintdan.framework.annotation.NotNullField
-import io.swagger.annotations.ApiModelProperty
 import org.springframework.http.HttpMethod
 
 /**
@@ -10,11 +9,9 @@ import org.springframework.http.HttpMethod
  * @since JDK1.8
  */
 data class RoleParam(
-    @ApiModelProperty(hidden = true)
-    val id: Long? = null,
 
-    @NotNullField(method = [(HttpMethod.POST)], message = "nickname cannot be null.")
-    val name: String? = null, // role's nickname
-    val description: String? = null,
-    val resourceIds: List<Long>? = null // group ids string
+    @NotNullField(method = [(HttpMethod.POST)], message = "name cannot be null.")
+    var name: String? = null,
+    var description: String? = null,
+    var resourceIds: Set<Long>? = null
 ) : BaseParam()

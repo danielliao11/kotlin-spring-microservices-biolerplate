@@ -12,23 +12,23 @@ import org.springframework.http.HttpMethod
  */
 data class UserParam(
     @ApiModelProperty(hidden = true)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @ApiModelProperty(value = "username", required = true, notes = "usr must greater than or equal to 4 and less than or equal to 50.")
     @NotNullField(method = [(HttpMethod.POST)], message = "usr cannot be null.")
     @SizeField(min = 4, max = 50, method = [(HttpMethod.POST)], message = "usr must greater than or equal to 4 and less than or equal to 50.")
-    val usr: String? = null, // username
+    var usr: String? = null, // username
 
     @ApiModelProperty(value = "password", required = true, notes = "pwd must greater than or equal to 4 and less than or equal to 16.")
     @NotNullField(method = [(HttpMethod.POST)], message = "pwd cannot be null.")
     @SizeField(min = 4, max = 16, method = [(HttpMethod.POST)], message = "pwd must greater than or equal to 4 and less than or equal to 16.")
-    val pwd: String? = null, // password
+    var pwd: String? = null, // password
 
     @ApiModelProperty(value = "user's nickname")
-    val nickname: String? = null, // user's nickname
+    var nickname: String? = null, // user's nickname
 
-    val description: String? = null,
+    var description: String? = null,
 
     @ApiModelProperty(value = "ids of roles", example = "[1,2,3]")
-    val roleIds: List<Long>? = null // role ids string
+    var roleIds: Set<Long>? = null // role ids string
 ) : BaseParam()

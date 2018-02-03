@@ -1,7 +1,7 @@
 package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.saintdan.framework.listener.PersistentListener
+import com.saintdan.framework.listener.UpdateListener
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
@@ -18,7 +18,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "accounts")
-@EntityListeners(PersistentListener::class)
+@EntityListeners(UpdateListener::class)
 data class Account(
     @GenericGenerator(name = "accountSequenceGenerator",
         strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
@@ -42,16 +42,16 @@ data class Account(
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedAt: Long = System.currentTimeMillis(),
+    var lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedBy: Long = 0,
+    var lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
     @JsonIgnore
-    val version: Int = 0,
+    var version: Int = 0,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -93,4 +93,16 @@ data class Account(
         .append(version)
         .toHashCode()
   }
+
+  override fun toString(): String =
+    StringBuilder("Account(")
+        .append("id = ").append(id)
+        .append(", account = ").append(account)
+        .append(", createdAt = ").append(createdAt)
+        .append(", createdBy = ").append(createdBy)
+        .append(", lastModifiedAt = ").append(lastModifiedAt)
+        .append(", lastModifiedBy = ").append(lastModifiedBy)
+        .append(", version = ").append(version)
+        .append(")")
+        .toString()
 }

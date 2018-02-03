@@ -1,7 +1,7 @@
 package com.saintdan.framework.po
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.saintdan.framework.listener.PersistentListener
+import com.saintdan.framework.listener.UpdateListener
 import org.apache.commons.lang3.builder.EqualsBuilder
 import org.apache.commons.lang3.builder.HashCodeBuilder
 import org.hibernate.annotations.GenericGenerator
@@ -19,7 +19,7 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "resources")
-@EntityListeners(PersistentListener::class)
+@EntityListeners(UpdateListener::class)
 data class Resource(
 
     @GenericGenerator(name = "resourceSequenceGenerator",
@@ -37,7 +37,7 @@ data class Resource(
     val name: String = "",
 
     @Column(length = 500)
-    val description: String = "",
+    val description: String? = null,
 
     @Column(nullable = false, updatable = false)
     val createdAt: Long = System.currentTimeMillis(),
@@ -48,16 +48,16 @@ data class Resource(
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedAt: Long = System.currentTimeMillis(),
+    var lastModifiedAt: Long = System.currentTimeMillis(),
 
     @Column(nullable = false)
     @JsonIgnore
-    val lastModifiedBy: Long = 0,
+    var lastModifiedBy: Long = 0,
 
     @Version
     @Column(nullable = false)
     @JsonIgnore
-    val version: Int = 0,
+    var version: Int = 0,
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "resources", cascade = [CascadeType.REFRESH])
     @JsonIgnore
@@ -67,9 +67,7 @@ data class Resource(
     private const val serialVersionUID = 6298843159549723556L
   }
 
-  override fun getAuthority(): String {
-    return name
-  }
+  override fun getAuthority(): String = name
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
@@ -104,4 +102,17 @@ data class Resource(
         .append(version)
         .toHashCode()
   }
+
+  override fun toString(): String =
+      StringBuilder("Resource(")
+          .append("id = ").append(id)
+          .append(", name = ").append(name)
+          .append(", description = ").append(description)
+          .append(", createdAt = ").append(createdAt)
+          .append(", createdBy = ").append(createdBy)
+          .append(", lastModifiedAt = ").append(lastModifiedAt)
+          .append(", lastModifiedBy = ").append(lastModifiedBy)
+          .append(", version = ").append(version)
+          .append(")")
+          .toString()
 }

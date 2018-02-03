@@ -1,2 +1,5 @@
 - 1.0.0.RELEASE
-  - [ADD] Initial version. 
+  - FEAT: Initial version. 
+
+- 1.0.1.RELEASE
+  - FIX: Fix update bugs.

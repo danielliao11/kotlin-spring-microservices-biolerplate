@@ -81,12 +81,6 @@ spring:
     properties:
       hibernate:
         format_sql: false
-        generate_statistics: true
 # Mysql
 #      dialect: org.hibernate.dialect.MySQL5Dialect
       dialect: org.hibernate.dialect.PostgreSQLDialect
-
-# ===============================
-# = SPRING BOOT ADMIN
-# ===============================
-management.security.enabled: true
