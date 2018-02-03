@@ -93,4 +93,16 @@ data class Account(
         .append(version)
         .toHashCode()
   }
+
+  override fun toString(): String =
+    StringBuilder("Account(")
+        .append("id = ").append(id)
+        .append(", account = ").append(account)
+        .append(", createdAt = ").append(createdAt)
+        .append(", createdBy = ").append(createdBy)
+        .append(", lastModifiedAt = ").append(lastModifiedAt)
+        .append(", lastModifiedBy = ").append(lastModifiedBy)
+        .append(", version = ").append(version)
+        .append(")")
+        .toString()
 }

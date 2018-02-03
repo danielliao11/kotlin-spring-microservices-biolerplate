@@ -37,7 +37,7 @@ data class Role(
     val name: String = "",
 
     @Column(length = 500)
-    val description: String,
+    val description: String? = null,
 
     @Column(nullable = false, updatable = false)
     val createdAt: Long = System.currentTimeMillis(),
@@ -63,13 +63,12 @@ data class Role(
     @JsonIgnore
     val users: Set<User>? = emptySet(),
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REFRESH])
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinTable(
         name = "roles_has_resources",
         joinColumns = [JoinColumn(name = "role_id")],
         inverseJoinColumns = [JoinColumn(name = "resource_id")])
-    @JsonIgnore
-    val resources: Set<Resource>? = emptySet()
+    var resources: Set<Resource> = emptySet()
 ) : Serializable {
   companion object {
     private const val serialVersionUID = -5193344128221526323L
@@ -113,4 +112,17 @@ data class Role(
         .append(version)
         .toHashCode()
   }
+
+  override fun toString(): String =
+      StringBuilder("Role(")
+          .append("id = ").append(id)
+          .append(", name = ").append(name)
+          .append(", description = ").append(description)
+          .append(", createdAt = ").append(createdAt)
+          .append(", createdBy = ").append(createdBy)
+          .append(", lastModifiedAt = ").append(lastModifiedAt)
+          .append(", lastModifiedBy = ").append(lastModifiedBy)
+          .append(", version = ").append(version)
+          .append(")")
+          .toString()
 }

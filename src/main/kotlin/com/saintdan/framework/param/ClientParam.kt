@@ -1,8 +1,6 @@
 package com.saintdan.framework.param
 
 import com.saintdan.framework.annotation.NotNullField
-import com.saintdan.framework.annotation.SizeField
-import io.swagger.annotations.ApiModelProperty
 import org.springframework.http.HttpMethod
 
 /**
@@ -11,8 +9,6 @@ import org.springframework.http.HttpMethod
  * @since JDK1.8
  */
 data class ClientParam(
-    @ApiModelProperty(hidden = true)
-    var id: Long? = 0,
 
     @NotNullField(method = [(HttpMethod.POST)], message = "nickname cannot be null.")
     var name: String? = null,

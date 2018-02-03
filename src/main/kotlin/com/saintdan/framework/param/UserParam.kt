@@ -30,5 +30,5 @@ data class UserParam(
     var description: String? = null,
 
     @ApiModelProperty(value = "ids of roles", example = "[1,2,3]")
-    var roleIds: List<Long>? = null // role ids string
+    var roleIds: Set<Long>? = null // role ids string
 ) : BaseParam()
